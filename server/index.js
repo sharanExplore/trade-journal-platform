@@ -1,3 +1,7 @@
+const dns = require("node:dns");
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -14,7 +18,9 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-    .connect(MONGO_URI)
+    .connect(MONGO_URI, {
+        family: 4
+    })
     .then(() => {
         console.log("MongoDB connected successfully");
 
@@ -23,5 +29,6 @@ mongoose
         });
     })
     .catch((error) => {
-        console.error("MongoDB connection failed:", error.message);
+        console.error("MongoDB connection failed:");
+        console.error(error);
     });
