@@ -12,19 +12,11 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        {/* TRUST / VALUE STRIP */}
         <ValueStrip />
-
-        {/* FEATURES */}
         <Features />
-
-        {/* HOW IT WORKS */}
         <HowItWorks />
-        {/* FINAL CTA */}
         <FinalCTA />
       </main>
-
-      {/* FOOTER */}
       <Footer />
     </>
   )
