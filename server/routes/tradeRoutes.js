@@ -177,5 +177,48 @@ router.get("/", authMiddleware, async (req, res) => {
         });
     }
 });
+// GET /api/trades/:id -> get one trade for the logged-in user
+router.get("/:id", authMiddleware, async (req, res) => {
+    try {
+        const trade = await Trade.findOne({
+            _id: req.params.id,
+            user: req.userId,
+        });
+
+        if (!trade) {
+            return res.status(404).json({
+                message: "Trade not found",
+            });
+        }
+
+        return res.status(200).json({
+            trade: {
+                id: trade._id,
+                symbol: trade.symbol,
+                market: trade.market,
+                tradeType: trade.tradeType,
+                quantity: trade.quantity,
+                entryPrice: trade.entryPrice,
+                exitPrice: trade.exitPrice,
+                entryDate: trade.entryDate,
+                exitDate: trade.exitDate,
+                currency: trade.currency,
+                strategyName: trade.strategyName,
+                status: trade.status,
+            },
+        });
+    } catch (error) {
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid trade ID",
+            });
+        }
+
+        console.error("Get trade error:", error);
+        return res.status(500).json({
+            message: "Server error while fetching trade",
+        });
+    }
+});
 
 module.exports = router;
