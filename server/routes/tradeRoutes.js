@@ -221,4 +221,130 @@ router.get("/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// PUT /api/trades/:id -> update a trade for the logged-in user
+router.put("/:id", authMiddleware, async (req, res) => {
+    try {
+        // 1. Find the trade belonging to the logged-in user
+        const trade = await Trade.findOne({
+            _id: req.params.id,
+            user: req.userId,
+        });
+
+        // 2. Check whether the trade exists
+        if (!trade) {
+            return res.status(404).json({
+                message: "Trade not found",
+            });
+        }
+
+        // 3. Get the fields that are allowed to change
+        const {
+            symbol,
+            market,
+            tradeType,
+            quantity,
+            entryPrice,
+            exitPrice,
+            entryDate,
+            exitDate,
+            currency,
+            strategyName,
+        } = req.body;
+
+        // 4. Update only fields that were provided
+        if (symbol !== undefined) trade.symbol = symbol;
+        if (market !== undefined) trade.market = market;
+        if (tradeType !== undefined) trade.tradeType = tradeType;
+        if (quantity !== undefined) trade.quantity = quantity;
+        if (entryPrice !== undefined) trade.entryPrice = entryPrice;
+        if (exitPrice !== undefined) trade.exitPrice = exitPrice;
+        if (entryDate !== undefined) trade.entryDate = entryDate;
+        if (exitDate !== undefined) trade.exitDate = exitDate;
+        if (currency !== undefined) trade.currency = currency;
+        if (strategyName !== undefined) trade.strategyName = strategyName;
+
+        // 5. Check exit price and exit date
+        // They must either both exist or both be absent.
+        const hasExitPrice =
+            trade.exitPrice !== undefined &&
+            trade.exitPrice !== null;
+
+        const hasExitDate =
+            trade.exitDate !== undefined &&
+            trade.exitDate !== null;
+
+        if (hasExitPrice !== hasExitDate) {
+            return res.status(400).json({
+                message: "Exit price and exit date must be provided together",
+            });
+        }
+
+        // 6. Check that exit date is not before entry date
+        if (hasExitDate) {
+            const parsedEntryDate = new Date(trade.entryDate);
+            const parsedExitDate = new Date(trade.exitDate);
+
+            if (
+                Number.isNaN(parsedEntryDate.getTime()) ||
+                Number.isNaN(parsedExitDate.getTime())
+            ) {
+                return res.status(400).json({
+                    message: "Entry date and exit date must be valid dates",
+                });
+            }
+
+            if (parsedExitDate < parsedEntryDate) {
+                return res.status(400).json({
+                    message: "Exit date cannot be earlier than entry date",
+                });
+            }
+        }
+
+        // 7. Server decides the status
+        trade.status = hasExitPrice ? "CLOSED" : "OPEN";
+
+        // 8. Save the updated trade
+        await trade.save();
+
+        // 9. Return the updated trade
+        return res.status(200).json({
+            message: "Trade updated successfully",
+            trade: {
+                id: trade._id,
+                symbol: trade.symbol,
+                market: trade.market,
+                tradeType: trade.tradeType,
+                quantity: trade.quantity,
+                entryPrice: trade.entryPrice,
+                exitPrice: trade.exitPrice,
+                entryDate: trade.entryDate,
+                exitDate: trade.exitDate,
+                currency: trade.currency,
+                strategyName: trade.strategyName,
+                status: trade.status,
+            },
+        });
+    } catch (error) {
+        // Invalid MongoDB ID
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid trade ID",
+            });
+        }
+
+        // Mongoose validation error
+        if (error.name === "ValidationError") {
+            return res.status(400).json({
+                message: error.message,
+            });
+        }
+
+        // Unexpected server/database error
+        console.error("Update trade error:", error);
+
+        return res.status(500).json({
+            message: "Server error while updating trade",
+        });
+    }
+});
 module.exports = router;
