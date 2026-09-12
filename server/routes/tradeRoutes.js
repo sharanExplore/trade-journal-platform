@@ -151,8 +151,23 @@ router.get("/", authMiddleware, async (req, res) => {
             user: req.userId,
         }).sort({ createdAt: -1 });
 
+        const formattedTrades = trades.map((trade) => ({
+            id: trade._id,
+            symbol: trade.symbol,
+            market: trade.market,
+            tradeType: trade.tradeType,
+            quantity: trade.quantity,
+            entryPrice: trade.entryPrice,
+            exitPrice: trade.exitPrice,
+            entryDate: trade.entryDate,
+            exitDate: trade.exitDate,
+            currency: trade.currency,
+            strategyName: trade.strategyName,
+            status: trade.status,
+        }));
+
         return res.status(200).json({
-            trades,
+            trades: formattedTrades,
         });
     } catch (error) {
         console.error("Get trades error:", error);
