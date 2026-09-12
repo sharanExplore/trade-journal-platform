@@ -144,5 +144,23 @@ router.post("/", authMiddleware, async (req, res) => {
         });
     }
 });
+// GET /api/trades -> get trades for the logged-in user
+router.get("/", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            trades,
+        });
+    } catch (error) {
+        console.error("Get trades error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching trades",
+        });
+    }
+});
 
 module.exports = router;
