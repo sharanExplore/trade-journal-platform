@@ -6,6 +6,8 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const Trade = require("../models/Trade");
 
+const calculatePnL = require("../utils/pnl");
+
 // POST /api/trades -> create a new trade for the logged-in user
 router.post("/", authMiddleware, async (req, res) => {
     try {
@@ -164,6 +166,7 @@ router.get("/", authMiddleware, async (req, res) => {
             currency: trade.currency,
             strategyName: trade.strategyName,
             status: trade.status,
+            pnl: calculatePnL(trade),
         }));
 
         return res.status(200).json({
@@ -205,6 +208,7 @@ router.get("/:id", authMiddleware, async (req, res) => {
                 currency: trade.currency,
                 strategyName: trade.strategyName,
                 status: trade.status,
+                pnl: calculatePnL(trade),
             },
         });
     } catch (error) {
@@ -351,27 +355,32 @@ router.put("/:id", authMiddleware, async (req, res) => {
 // DELETE /api/trades/:id -> delete a trade for the logged-in user
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
+        //finding the trade and deleting it in one step
         const trade = await Trade.findOneAndDelete({
             _id: req.params.id,
             user: req.userId,
         });
 
+        //if the trade was not found, return a 404 error
         if (!trade) {
             return res.status(404).json({
                 message: "Trade not found",
             });
         }
 
+        //if the trade was found and deleted, return a success message
         return res.status(200).json({
             message: "Trade deleted successfully",
         });
     } catch (error) {
+        // Invalid MongoDB ID
         if (error.name === "CastError") {
             return res.status(400).json({
                 message: "Invalid trade ID",
             });
         }
 
+        // Unexpected server/database error
         console.error("Delete trade error:", error);
 
         return res.status(500).json({
