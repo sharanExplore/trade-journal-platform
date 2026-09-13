@@ -347,4 +347,37 @@ router.put("/:id", authMiddleware, async (req, res) => {
         });
     }
 });
+
+// DELETE /api/trades/:id -> delete a trade for the logged-in user
+router.delete("/:id", authMiddleware, async (req, res) => {
+    try {
+        const trade = await Trade.findOneAndDelete({
+            _id: req.params.id,
+            user: req.userId,
+        });
+
+        if (!trade) {
+            return res.status(404).json({
+                message: "Trade not found",
+            });
+        }
+
+        return res.status(200).json({
+            message: "Trade deleted successfully",
+        });
+    } catch (error) {
+        if (error.name === "CastError") {
+            return res.status(400).json({
+                message: "Invalid trade ID",
+            });
+        }
+
+        console.error("Delete trade error:", error);
+
+        return res.status(500).json({
+            message: "Server error while deleting trade",
+        });
+    }
+});
+
 module.exports = router;
