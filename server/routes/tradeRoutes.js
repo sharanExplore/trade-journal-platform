@@ -211,6 +211,16 @@ router.get("/stats", authMiddleware, async (req, res) => {
                 ? 0
                 : (winningTrades / closedTrades.length) * 100;
 
+        const bestTrade =
+            closedTrades.length === 0
+                ? null
+                : Math.max(...closedTrades.map((trade) => calculatePnL(trade)));
+
+        const worstTrade =
+            closedTrades.length === 0
+                ? null
+                : Math.min(...closedTrades.map((trade) => calculatePnL(trade)));
+
         return res.status(200).json({
             totalTrades,
             closedTrades: closedTrades.length,
@@ -218,7 +228,10 @@ router.get("/stats", authMiddleware, async (req, res) => {
             losingTrades,
             netPnL,
             winRate,
+            bestTrade,
+            worstTrade,
         });
+
     } catch (error) {
         console.error("Get trade stats error:", error);
 
