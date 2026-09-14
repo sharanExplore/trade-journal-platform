@@ -296,6 +296,42 @@ router.get("/stats/strategies", authMiddleware, async (req, res) => {
         });
     }
 });
+// GET /api/trades/stats/markets -> get P&L by market
+router.get("/stats/markets", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+            status: "CLOSED",
+        });
+
+        const marketMap = {};
+
+        trades.forEach((trade) => {
+            const pnl = calculatePnL(trade);
+
+            if (!marketMap[trade.market]) {
+                marketMap[trade.market] = {
+                    market: trade.market,
+                    tradeCount: 0,
+                    netPnL: 0,
+                };
+            }
+
+            marketMap[trade.market].tradeCount += 1;
+            marketMap[trade.market].netPnL += pnl;
+        });
+
+        return res.status(200).json({
+            markets: Object.values(marketMap),
+        });
+    } catch (error) {
+        console.error("Get market stats error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching market statistics",
+        });
+    }
+});
 // GET /api/trades/:id -> get one trade for the logged-in user
 router.get("/:id", authMiddleware, async (req, res) => {
     try {
