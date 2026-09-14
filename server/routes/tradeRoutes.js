@@ -180,6 +180,53 @@ router.get("/", authMiddleware, async (req, res) => {
         });
     }
 });
+// GET /api/trades/stats -> get dashboard statistics
+router.get("/stats", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+        });
+
+        const totalTrades = trades.length;
+
+        const closedTrades = trades.filter(
+            (trade) => trade.status === "CLOSED"
+        );
+
+        const winningTrades = closedTrades.filter(
+            (trade) => calculatePnL(trade) > 0
+        ).length;
+
+        const losingTrades = closedTrades.filter(
+            (trade) => calculatePnL(trade) < 0
+        ).length;
+
+        const netPnL = closedTrades.reduce(
+            (total, trade) => total + calculatePnL(trade),
+            0
+        );
+
+        const winRate =
+            closedTrades.length === 0
+                ? 0
+                : (winningTrades / closedTrades.length) * 100;
+
+        return res.status(200).json({
+            totalTrades,
+            closedTrades: closedTrades.length,
+            winningTrades,
+            losingTrades,
+            netPnL,
+            winRate,
+        });
+    } catch (error) {
+        console.error("Get trade stats error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching trade statistics",
+        });
+    }
+});
 // GET /api/trades/:id -> get one trade for the logged-in user
 router.get("/:id", authMiddleware, async (req, res) => {
     try {
