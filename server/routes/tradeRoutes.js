@@ -332,6 +332,54 @@ router.get("/stats/markets", authMiddleware, async (req, res) => {
         });
     }
 });
+// GET /api/trades/stats/monthly -> get monthly P&L
+router.get("/stats/monthly", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+            status: "CLOSED",
+        });
+
+        const monthlyMap = {};
+
+        trades.forEach((trade) => {
+            const month = trade.exitDate.toISOString().slice(0, 7);
+            const key = `${month}_${trade.currency}`;
+
+            const pnl = calculatePnL(trade);
+
+            if (!monthlyMap[key]) {
+                monthlyMap[key] = {
+                    month,
+                    currency: trade.currency,
+                    tradeCount: 0,
+                    netPnL: 0,
+                };
+            }
+
+            monthlyMap[key].tradeCount += 1;
+            monthlyMap[key].netPnL += pnl;
+        });
+
+        const monthly = Object.values(monthlyMap).sort((a, b) => {
+            if (a.month !== b.month) {
+                return a.month.localeCompare(b.month);
+            }
+
+            return a.currency.localeCompare(b.currency);
+        });
+
+        return res.status(200).json({
+            monthly,
+        });
+    } catch (error) {
+        console.error("Get monthly stats error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching monthly statistics",
+        });
+    }
+});
 // GET /api/trades/:id -> get one trade for the logged-in user
 router.get("/:id", authMiddleware, async (req, res) => {
     try {
