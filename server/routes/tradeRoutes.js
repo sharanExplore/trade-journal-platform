@@ -221,6 +221,23 @@ router.get("/stats", authMiddleware, async (req, res) => {
                 ? null
                 : Math.min(...closedTrades.map((trade) => calculatePnL(trade)));
 
+        // Calculate average win and average loss
+        const averageWin =
+            winningTrades === 0
+                ? 0
+                : closedTrades
+                    .filter((trade) => calculatePnL(trade) > 0)
+                    .reduce((total, trade) => total + calculatePnL(trade), 0) /
+                winningTrades;
+
+        const averageLoss =
+            losingTrades === 0
+                ? 0
+                : closedTrades
+                    .filter((trade) => calculatePnL(trade) < 0)
+                    .reduce((total, trade) => total + calculatePnL(trade), 0) /
+                losingTrades;
+        // Return the statistics
         return res.status(200).json({
             totalTrades,
             closedTrades: closedTrades.length,
@@ -230,7 +247,9 @@ router.get("/stats", authMiddleware, async (req, res) => {
             winRate,
             bestTrade,
             worstTrade,
-        });
+            averageWin,
+            averageLoss,
+        });;
 
     } catch (error) {
         console.error("Get trade stats error:", error);
