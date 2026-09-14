@@ -183,10 +183,11 @@ router.get("/", authMiddleware, async (req, res) => {
 // GET /api/trades/stats -> get dashboard statistics
 router.get("/stats", authMiddleware, async (req, res) => {
     try {
+        // Fetch all trades for the logged-in user
         const trades = await Trade.find({
             user: req.userId,
         });
-
+        // Calculate statistics
         const totalTrades = trades.length;
 
         const closedTrades = trades.filter(
@@ -205,7 +206,7 @@ router.get("/stats", authMiddleware, async (req, res) => {
             (total, trade) => total + calculatePnL(trade),
             0
         );
-
+        // Calculate win rate
         const winRate =
             closedTrades.length === 0
                 ? 0
@@ -256,6 +257,42 @@ router.get("/stats", authMiddleware, async (req, res) => {
 
         return res.status(500).json({
             message: "Server error while fetching trade statistics",
+        });
+    }
+});
+// GET /api/trades/stats/strategies -> get P&L by strategy
+router.get("/stats/strategies", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+            status: "CLOSED",
+        });
+
+        const strategyMap = {};
+
+        trades.forEach((trade) => {
+            const pnl = calculatePnL(trade);
+
+            if (!strategyMap[trade.strategyName]) {
+                strategyMap[trade.strategyName] = {
+                    strategyName: trade.strategyName,
+                    tradeCount: 0,
+                    netPnL: 0,
+                };
+            }
+
+            strategyMap[trade.strategyName].tradeCount += 1;
+            strategyMap[trade.strategyName].netPnL += pnl;
+        });
+
+        return res.status(200).json({
+            strategies: Object.values(strategyMap),
+        });
+    } catch (error) {
+        console.error("Get strategy stats error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching strategy statistics",
         });
     }
 });
