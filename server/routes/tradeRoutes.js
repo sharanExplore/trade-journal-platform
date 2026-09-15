@@ -146,12 +146,61 @@ router.post("/", authMiddleware, async (req, res) => {
         });
     }
 });
-// GET /api/trades -> get trades for the logged-in user
+// GET /api/trades -> get filtered trades for the logged-in user
 router.get("/", authMiddleware, async (req, res) => {
     try {
-        const trades = await Trade.find({
+        const { market, tradeType, status, symbol } = req.query;
+
+        const validMarkets = [
+            "stocks",
+            "crypto",
+            "forex",
+            "indices",
+            "commodities",
+        ];
+
+        const validTradeTypes = ["BUY", "SELL"];
+        const validStatuses = ["OPEN", "CLOSED"];
+
+        if (market !== undefined && !validMarkets.includes(market)) {
+            return res.status(400).json({
+                message: "Invalid market filter",
+            });
+        }
+
+        if (tradeType !== undefined && !validTradeTypes.includes(tradeType)) {
+            return res.status(400).json({
+                message: "Invalid trade type filter",
+            });
+        }
+
+        if (status !== undefined && !validStatuses.includes(status)) {
+            return res.status(400).json({
+                message: "Invalid status filter",
+            });
+        }
+
+        const filter = {
             user: req.userId,
-        }).sort({ createdAt: -1 });
+        };
+
+        if (market !== undefined) {
+            filter.market = market;
+        }
+
+        if (tradeType !== undefined) {
+            filter.tradeType = tradeType;
+        }
+
+        if (status !== undefined) {
+            filter.status = status;
+        }
+
+        if (symbol !== undefined) {
+            filter.symbol = symbol.toUpperCase();
+        }
+
+        const trades = await Trade.find(filter).sort({ createdAt: -1 });
 
         const formattedTrades = trades.map((trade) => ({
             id: trade._id,
