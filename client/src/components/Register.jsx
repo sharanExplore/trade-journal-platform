@@ -1,4 +1,12 @@
+import { useState } from 'react'
+
 function Register() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+    })
+
     return (
         <main>
             <h1>Create your Tradefolio account</h1>
@@ -11,6 +19,13 @@ function Register() {
                         type="text"
                         name="name"
                         placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={(event) =>
+                            setFormData({
+                                ...formData,
+                                name: event.target.value,
+                            })
+                        }
                     />
                 </div>
 
@@ -21,6 +36,13 @@ function Register() {
                         type="email"
                         name="email"
                         placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={(event) =>
+                            setFormData({
+                                ...formData,
+                                email: event.target.value,
+                            })
+                        }
                     />
                 </div>
 
@@ -31,6 +53,13 @@ function Register() {
                         type="password"
                         name="password"
                         placeholder="Enter your password"
+                        value={formData.password}
+                        onChange={(event) =>
+                            setFormData({
+                                ...formData,
+                                password: event.target.value,
+                            })
+                        }
                     />
                 </div>
 
@@ -39,7 +68,7 @@ function Register() {
                 </button>
             </form>
         </main>
-    );
+    )
 }
 
-export default Register;
+export default Register
