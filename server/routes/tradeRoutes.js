@@ -151,6 +151,28 @@ router.get("/", authMiddleware, async (req, res) => {
     try {
         const { market, tradeType, status, symbol } = req.query;
 
+        const page = req.query.page !== undefined
+            ? Number(req.query.page)
+            : 1;
+
+        const limit = req.query.limit !== undefined
+            ? Number(req.query.limit)
+            : 10;
+
+        if (!Number.isInteger(page) || page < 1) {
+            return res.status(400).json({
+                message: "Page must be a positive integer",
+            });
+        }
+
+        if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+            return res.status(400).json({
+                message: "Limit must be an integer between 1 and 100",
+            });
+        }
+
+        const skip = (page - 1) * limit;
+
         const validMarkets = [
             "stocks",
             "crypto",
@@ -200,7 +222,12 @@ router.get("/", authMiddleware, async (req, res) => {
             filter.symbol = symbol.toUpperCase();
         }
 
-        const trades = await Trade.find(filter).sort({ createdAt: -1 });
+        const totalTrades = await Trade.countDocuments(filter);
+
+        const trades = await Trade.find(filter)
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         const formattedTrades = trades.map((trade) => ({
             id: trade._id,
@@ -220,6 +247,12 @@ router.get("/", authMiddleware, async (req, res) => {
 
         return res.status(200).json({
             trades: formattedTrades,
+            pagination: {
+                page,
+                limit,
+                totalTrades,
+                totalPages: Math.ceil(totalTrades / limit),
+            },
         });
     } catch (error) {
         console.error("Get trades error:", error);
