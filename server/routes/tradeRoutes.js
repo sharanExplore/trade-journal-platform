@@ -149,7 +149,7 @@ router.post("/", authMiddleware, async (req, res) => {
 // GET /api/trades -> get filtered trades for the logged-in user
 router.get("/", authMiddleware, async (req, res) => {
     try {
-        const { market, tradeType, status, symbol } = req.query;
+        const { market, tradeType, status, symbol, sortBy, order } = req.query;
 
         const page = req.query.page !== undefined
             ? Number(req.query.page)
@@ -164,12 +164,39 @@ router.get("/", authMiddleware, async (req, res) => {
                 message: "Page must be a positive integer",
             });
         }
+        const validSortFields = [
+            "createdAt",
+            "entryDate",
+            "entryPrice",
+            "quantity",
+            "symbol",
+        ];
+
+        const validSortOrders = ["asc", "desc"];
+
+        const selectedSortField = sortBy || "createdAt";
+        const selectedSortOrder = order || "desc";
+
+        if (!validSortFields.includes(selectedSortField)) {
+            return res.status(400).json({
+                message: "Invalid sort field",
+            });
+        }
+
+        if (!validSortOrders.includes(selectedSortOrder)) {
+            return res.status(400).json({
+                message: "Invalid sort order",
+            });
+        }
+
+        const sortDirection = selectedSortOrder === "asc" ? 1 : -1;
 
         if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
             return res.status(400).json({
                 message: "Limit must be an integer between 1 and 100",
             });
         }
+
 
         const skip = (page - 1) * limit;
 
@@ -225,7 +252,7 @@ router.get("/", authMiddleware, async (req, res) => {
         const totalTrades = await Trade.countDocuments(filter);
 
         const trades = await Trade.find(filter)
-            .sort({ createdAt: -1 })
+            .sort({ [selectedSortField]: sortDirection })
             .skip(skip)
             .limit(limit);
 
