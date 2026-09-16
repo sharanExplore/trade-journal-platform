@@ -9,7 +9,29 @@ function Register() {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        console.log(formData)
+        try {
+            const response = await fetch(
+                'http://localhost:5000/api/auth/register',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                }
+            )
+
+            const data = await response.json()
+
+            if (response.ok) {
+                console.log('User registered successfully')
+                console.log(data)
+            } else {
+                console.error('Registration failed:', data.message)
+            }
+        } catch (error) {
+            console.error('Network error:', error)
+        }
     }
 
 
