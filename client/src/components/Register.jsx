@@ -6,12 +6,18 @@ function Register() {
         email: '',
         password: '',
     })
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+
+        console.log(formData)
+    }
+
 
     return (
         <main>
             <h1>Create your Tradefolio account</h1>
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Name</label>
                     <input
