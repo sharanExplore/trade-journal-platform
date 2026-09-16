@@ -9,6 +9,7 @@ import HowItWorks from './components/HowItWorks.jsx'
 import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import Register from './components/Register.jsx'
+import Login from './components/Login.jsx'
 
 function App() {
   const [page, setPage] = useState('landing')
@@ -16,10 +17,16 @@ function App() {
   if (page === 'register') {
     return <Register />
   }
+  if (page === 'login') {
+    return <Login />
+  }
 
   return (
     <>
-      <Navbar onGetStarted={() => setPage('register')} />
+      <Navbar
+        onGetStarted={() => setPage('register')}
+        onLogin={() => setPage('login')}
+      />
 
       <main>
         <Hero />

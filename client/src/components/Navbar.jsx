@@ -1,5 +1,5 @@
 
-function Navbar({ onGetStarted }) {
+function Navbar({ onGetStarted, onLogin }) {
     return (
         <header className="navbar">
             <div className="container navbar-inner">
@@ -15,7 +15,12 @@ function Navbar({ onGetStarted }) {
                 </nav>
 
                 <div className="navbar-actions">
-                    <button type="button" className="btn btn-ghost">Login</button>
+                    <button type="button"
+                        className="btn btn-ghost"
+                        onClick={onLogin}
+                    >
+                        Login
+                    </button>
                     <button
                         type="button"
                         className="btn btn-primary"
