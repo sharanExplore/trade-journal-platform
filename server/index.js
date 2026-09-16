@@ -3,6 +3,7 @@ const dns = require("node:dns");
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const express = require("express");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
@@ -12,6 +13,10 @@ const tradeRoutes = require("./routes/tradeRoutes");
 dotenv.config();
 
 const app = express();
+
+app.use(cors({
+    origin: "http://localhost:5173",
+}));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
