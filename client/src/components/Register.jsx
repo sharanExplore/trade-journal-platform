@@ -6,8 +6,15 @@ function Register() {
         email: '',
         password: '',
     })
+    const [message, setMessage] = useState('')
+
     const handleSubmit = async (event) => {
         event.preventDefault()
+        setMessage('')
+        if (!formData.name || !formData.email || !formData.password) {
+            setMessage('All fields are required')
+            return
+        }
 
         try {
             const response = await fetch(
@@ -24,10 +31,9 @@ function Register() {
             const data = await response.json()
 
             if (response.ok) {
-                console.log('User registered successfully')
-                console.log(data)
+                setMessage('User registered successfully')
             } else {
-                console.error('Registration failed:', data.message)
+                setMessage(data.message)
             }
         } catch (error) {
             console.error('Network error:', error)
@@ -39,7 +45,10 @@ function Register() {
         <main>
             <h1>Create your Tradefolio account</h1>
 
-            <form onSubmit={handleSubmit}>
+            <form
+                onSubmit={handleSubmit}
+                onChange={() => setMessage('')}
+            >
                 <div>
                     <label htmlFor="name">Name</label>
                     <input
@@ -95,6 +104,7 @@ function Register() {
                     Create Account
                 </button>
             </form>
+            <p>{message}</p>
         </main>
     )
 }
