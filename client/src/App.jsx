@@ -10,6 +10,8 @@ import FinalCTA from './components/FinalCTA.jsx'
 import Footer from './components/Footer.jsx'
 import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
+import Dashboard from './components/Dashboard.jsx'
+
 
 function App() {
   const [page, setPage] = useState('landing')
@@ -18,8 +20,12 @@ function App() {
     return <Register />
   }
   if (page === 'login') {
-    return <Login />
+    return <Login onLoginSuccess={() => setPage('dashboard')} />
   }
+  if (page === 'dashboard') {
+    return <Dashboard />
+  }
+
 
   return (
     <>

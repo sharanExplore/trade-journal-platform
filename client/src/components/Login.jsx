@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function Login() {
+function Login({ onLoginSuccess }) {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -26,6 +26,7 @@ function Login() {
             if (response.ok) {
                 localStorage.setItem('token', data.token)
                 console.log('Login successful')
+                onLoginSuccess()
             } else {
                 console.error('Login failed:', data.message)
             }
