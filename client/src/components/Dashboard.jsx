@@ -1,6 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function Dashboard() {
+    const [trades, setTrades] = useState([])
+
     useEffect(() => {
         const token = localStorage.getItem('token')
 
@@ -11,7 +13,7 @@ function Dashboard() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                setTrades(data.trades)
             })
             .catch((error) => {
                 console.error('Error fetching trades:', error)
@@ -22,6 +24,7 @@ function Dashboard() {
         <main>
             <h1>Tradefolio Dashboard</h1>
             <p>You are logged in successfully.</p>
+            <p>Total trades: {trades.length}</p>
         </main>
     )
 }
