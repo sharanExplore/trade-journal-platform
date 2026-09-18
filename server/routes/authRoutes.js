@@ -5,6 +5,31 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
 
+// Get current user route
+router.get("/me", authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+        });
+    } catch (error) {
+        console.error("Get current user error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching user",
+        });
+    }
+});
+
 //register route
 router.post("/register", async (req, res) => {
     const { name, email, password } = req.body;

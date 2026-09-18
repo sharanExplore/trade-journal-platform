@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react'
 function Dashboard() {
     const [trades, setTrades] = useState([])
     const [stats, setStats] = useState(null)
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
         const token = localStorage.getItem('token')
 
+        // Fetch trades data
         fetch('http://localhost:5000/api/trades', {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -19,6 +21,7 @@ function Dashboard() {
             .catch((error) => {
                 console.error('Error fetching trades:', error)
             })
+        // Fetch stats data
         fetch('http://localhost:5000/api/trades/stats', {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -30,6 +33,19 @@ function Dashboard() {
             })
             .catch((error) => {
                 console.error('Error fetching stats:', error)
+            })
+        // Fetch user data
+        fetch('http://localhost:5000/api/auth/me', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setUser(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching user:', error)
             })
     }, [])
 
