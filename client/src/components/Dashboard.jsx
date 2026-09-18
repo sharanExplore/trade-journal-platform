@@ -63,14 +63,37 @@ function Dashboard() {
             )}
             <p>Total trades: {trades.length}</p>
 
-            {trades.map((trade) => (
-                <div key={trade.id}>
-                    <h2>{trade.symbol}</h2>
-                    <p>Type: {trade.tradeType}</p>
-                    <p>Quantity: {trade.quantity}</p>
-                    <p>P&L: {trade.pnl}</p>
-                </div>
-            ))}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Market</th>
+                        <th>Type</th>
+                        <th>Quantity</th>
+                        <th>Entry Price</th>
+                        <th>Exit Price</th>
+                        <th>Strategy</th>
+                        <th>Status</th>
+                        <th>P&L</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {trades.map((trade) => (
+                        <tr key={trade.id}>
+                            <td>{trade.symbol}</td>
+                            <td>{trade.market}</td>
+                            <td>{trade.tradeType}</td>
+                            <td>{trade.quantity}</td>
+                            <td>{trade.entryPrice}</td>
+                            <td>{trade.exitPrice}</td>
+                            <td>{trade.strategyName}</td>
+                            <td>{trade.status}</td>
+                            <td>{trade.pnl}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </main>
     )
 }
