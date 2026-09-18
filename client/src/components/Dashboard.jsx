@@ -25,6 +25,15 @@ function Dashboard() {
             <h1>Tradefolio Dashboard</h1>
             <p>You are logged in successfully.</p>
             <p>Total trades: {trades.length}</p>
+
+            {trades.map((trade) => (
+                <div key={trade.id}>
+                    <h2>{trade.symbol}</h2>
+                    <p>Type: {trade.tradeType}</p>
+                    <p>Quantity: {trade.quantity}</p>
+                    <p>P&L: {trade.pnl}</p>
+                </div>
+            ))}
         </main>
     )
 }
