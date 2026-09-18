@@ -52,7 +52,12 @@ function Dashboard() {
     return (
         <main>
             <h1>Tradefolio Dashboard</h1>
-            <p>You are logged in successfully.</p>
+            {user && (
+                <>
+                    <h2>Welcome, {user.name}</h2>
+                    <p>{user.email}</p>
+                </>
+            )}
             {stats && (
                 <p>Total P&L: {stats.netPnL.toFixed(2)}</p>
             )}
