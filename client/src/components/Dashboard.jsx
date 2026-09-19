@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import '../styles/dashboard/Dashboard.css'
 
 function Dashboard() {
     const [trades, setTrades] = useState([])
@@ -50,51 +51,150 @@ function Dashboard() {
     }, [])
 
     return (
-        <main>
-            <h1>Tradefolio Dashboard</h1>
-            {user && (
-                <>
-                    <h2>Welcome, {user.name}</h2>
-                    <p>{user.email}</p>
-                </>
-            )}
-            {stats && (
-                <p>Total P&L: {stats.netPnL.toFixed(2)}</p>
-            )}
-            <p>Total trades: {trades.length}</p>
+        <div className="dashboard">
+            <aside className="dashboard-sidebar">
+                <div className="dashboard-logo">
+                    Trade<span>Folio</span>
+                </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Symbol</th>
-                        <th>Market</th>
-                        <th>Type</th>
-                        <th>Quantity</th>
-                        <th>Entry Price</th>
-                        <th>Exit Price</th>
-                        <th>Strategy</th>
-                        <th>Status</th>
-                        <th>P&L</th>
-                    </tr>
-                </thead>
+                <nav className="dashboard-nav">
+                    <div className="dashboard-nav-item active">
+                        Dashboard
+                    </div>
 
-                <tbody>
-                    {trades.map((trade) => (
-                        <tr key={trade.id}>
-                            <td>{trade.symbol}</td>
-                            <td>{trade.market}</td>
-                            <td>{trade.tradeType}</td>
-                            <td>{trade.quantity}</td>
-                            <td>{trade.entryPrice}</td>
-                            <td>{trade.exitPrice}</td>
-                            <td>{trade.strategyName}</td>
-                            <td>{trade.status}</td>
-                            <td>{trade.pnl}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </main>
+                    <div className="dashboard-nav-item">
+                        Trades
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Analytics
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Calendar
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Watchlist
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Journal
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Goals
+                    </div>
+
+                    <div className="dashboard-nav-item">
+                        Settings
+                    </div>
+                </nav>
+            </aside>
+
+            <section className="dashboard-content">
+                <header className="dashboard-header">
+                    <input
+                        className="dashboard-search"
+                        type="text"
+                        placeholder="Search trades, notes, symbols..."
+                    />
+
+                    {user && (
+                        <div className="dashboard-user">
+                            {user.name}
+                        </div>
+                    )}
+                </header>
+
+                <main className="dashboard-main">
+                    <h1>Dashboard</h1>
+
+                    {user && (
+                        <p>
+                            Here's an overview of your trading performance.
+                        </p>
+                    )}
+
+                    <div className="dashboard-kpi-grid">
+                        <div className="dashboard-card dashboard-kpi">
+                            <p className="dashboard-kpi-label">Net P&L</p>
+                            <p className="dashboard-kpi-value is-positive">
+                                {stats?.netPnL?.toFixed(2)}
+                            </p>
+                            <p className="dashboard-kpi-note">Overall trading result</p>
+                        </div>
+
+                        <div className="dashboard-card dashboard-kpi">
+                            <p className="dashboard-kpi-label">Win Rate</p>
+                            <p className="dashboard-kpi-value">
+                                {stats?.winRate?.toFixed(2)}%
+                            </p>
+                            <p className="dashboard-kpi-note">
+                                {stats?.winningTrades} winning trades
+                            </p>
+                        </div>
+
+                        <div className="dashboard-card dashboard-kpi">
+                            <p className="dashboard-kpi-label">Total Trades</p>
+                            <p className="dashboard-kpi-value">
+                                {stats?.totalTrades}
+                            </p>
+                            <p className="dashboard-kpi-note">
+                                {stats?.closedTrades} closed trades
+                            </p>
+                        </div>
+
+                        <div className="dashboard-card dashboard-kpi">
+                            <p className="dashboard-kpi-label">Best Trade</p>
+                            <p className="dashboard-kpi-value is-positive">
+                                {stats?.bestTrade?.toFixed(2)}
+                            </p>
+                            <p className="dashboard-kpi-note">Highest individual P&L</p>
+                        </div>
+                    </div>
+
+                    <section className="dashboard-card dashboard-trades">
+                        <div className="dashboard-section-header">
+                            <div>
+                                <h2>Recent Trades</h2>
+                                <p>Your latest trading activity</p>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-table-wrapper">
+                            <table className="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th>
+                                        <th>Type</th>
+                                        <th>Quantity</th>
+                                        <th>Entry Price</th>
+                                        <th>Exit Price</th>
+                                        <th>Status</th>
+                                        <th>P&L</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {trades.map((trade) => (
+                                        <tr key={trade.id}>
+                                            <td>{trade.symbol}</td>
+                                            <td>{trade.tradeType}</td>
+                                            <td>{trade.quantity}</td>
+                                            <td>{trade.entryPrice}</td>
+                                            <td>{trade.exitPrice ?? '-'}</td>
+                                            <td>{trade.status}</td>
+                                            <td>{trade.pnl ?? '-'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </main>
+            </section>
+        </div>
     )
 }
 
