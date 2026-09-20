@@ -6,6 +6,9 @@ function Dashboard() {
     const [stats, setStats] = useState(null)
     const [user, setUser] = useState(null)
     const [monthlyStats, setMonthlyStats] = useState([])
+    const inrMonthlyStats = monthlyStats.filter(
+        (item) => item.currency === 'INR'
+    )
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -265,6 +268,69 @@ function Dashboard() {
                                     </p>
                                 </div>
                             ))}
+                        </div>
+                    </section>
+                    <section className="dashboard-card dashboard-performance-chart">
+                        <div className="dashboard-section-header">
+                            <div>
+                                <h2>Performance Overview</h2>
+                                <p>Monthly INR net P&amp;L</p>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-chart">
+                            {inrMonthlyStats.map((item) => {
+                                const isPositive = item.netPnL >= 0
+                                const barHeight = Math.max(
+                                    Math.abs(item.netPnL) / 10,
+                                    8
+                                )
+
+                                return (
+                                    <div
+                                        className="dashboard-chart-item"
+                                        key={`${item.month}-${item.currency}`}
+                                    >
+                                        <div
+                                            className="dashboard-chart-bar"
+                                            style={{
+                                                height: `${barHeight}px`,
+                                                backgroundColor: isPositive
+                                                    ? '#20e0b2'
+                                                    : '#ff5f6d',
+                                                bottom: isPositive ? '50%' : 'auto',
+                                                top: isPositive ? 'auto' : '50%',
+                                            }}
+                                        />
+
+                                        <div
+                                            className="dashboard-chart-value"
+                                            style={{
+                                                bottom: isPositive
+                                                    ? `calc(50% + ${barHeight + 10}px)`
+                                                    : 'auto',
+                                                top: isPositive
+                                                    ? 'auto'
+                                                    : `calc(50% + ${barHeight + 10}px)`,
+                                            }}
+                                        >
+                                            {item.netPnL.toFixed(0)}
+                                        </div>
+
+                                        <div
+                                            className="dashboard-chart-label"
+                                            style={{
+                                                top: isPositive
+                                                    ? 'auto'
+                                                    : `calc(50% + ${barHeight + 35}px)`,
+                                                bottom: isPositive ? '0' : 'auto',
+                                            }}
+                                        >
+                                            {item.month}
+                                        </div>
+                                    </div>
+                                )
+                            })}
                         </div>
                     </section>
                 </main>

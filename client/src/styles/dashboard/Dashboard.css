@@ -257,3 +257,64 @@
 .dashboard-monthly-pnl.is-negative {
     color: #ff6b6b;
 }
+
+.dashboard-performance-chart {
+    margin-top: 24px;
+    padding: 20px;
+}
+
+.dashboard-chart {
+    height: 280px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    gap: 40px;
+    padding: 20px;
+    position: relative;
+}
+
+.dashboard-chart::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    height: 1px;
+    background: #315157;
+}
+
+.dashboard-chart-item {
+    flex: 1;
+    height: 100%;
+    max-width: 120px;
+    position: relative;
+}
+
+.dashboard-chart-bar {
+    position: absolute;
+    left: 50%;
+    width: 56px;
+    transform: translateX(-50%);
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.dashboard-chart-value {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #d8e2e3;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.dashboard-chart-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #6f8589;
+    font-size: 12px;
+    white-space: nowrap;
+}
