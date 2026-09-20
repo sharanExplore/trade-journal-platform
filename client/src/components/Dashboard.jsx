@@ -10,6 +10,9 @@ function Dashboard() {
         (item) => item.currency === 'INR'
     )
     const [strategyStats, setStrategyStats] = useState([])
+    const [equityCurve, setEquityCurve] = useState([])
+    const [equityRange, setEquityRange] = useState('ALL')
+
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -70,6 +73,7 @@ function Dashboard() {
             .catch((error) => {
                 console.error('Error fetching monthly stats:', error)
             })
+        // Fetch strategy stats data
         fetch('http://localhost:5000/api/trades/stats/strategies', {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -83,7 +87,24 @@ function Dashboard() {
             .catch((error) => {
                 console.error('Error fetching strategy stats:', error)
             })
-    }, [])
+        // Fetch equity curve data
+        fetch(
+            `http://localhost:5000/api/trades/stats/equity-curve?range=${equityRange}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Equity curve:', data)
+                setEquityCurve(data.equityCurve)
+            })
+            .catch((error) =>
+                console.error('Error fetching equity curve:', error)
+            )
+    }, [equityRange]) // Re-run when equityRange changes
 
     return (
         <div className="dashboard">
@@ -287,64 +308,280 @@ function Dashboard() {
                     <section className="dashboard-card dashboard-performance-chart">
                         <div className="dashboard-section-header">
                             <div>
-                                <h2>Performance Overview</h2>
-                                <p>Monthly INR net P&amp;L</p>
+                                <h2>Equity Curve</h2>
+                                <p>Cumulative INR P&amp;L</p>
+                            </div>
+
+                            <div className="dashboard-range-buttons">
+                                {['7D', '1W', '1M', '3M', '6M', '1Y', 'ALL'].map((range) => (
+                                    <button
+                                        key={range}
+                                        className={`dashboard-range-button ${equityRange === range ? 'active' : ''
+                                            }`}
+                                        onClick={() => setEquityRange(range)}
+                                    >
+                                        {range}
+                                    </button>
+                                ))}
                             </div>
                         </div>
+                        <div className="dashboard-equity-chart">
+                            {equityCurve.length === 0 ? (
+                                <p className="dashboard-chart-empty">
+                                    No closed INR trades found for this period.
+                                </p>
+                            ) : (
+                                (() => {
+                                    const chartWidth = 1000
+                                    const chartHeight = 320
 
-                        <div className="dashboard-chart">
-                            {inrMonthlyStats.map((item) => {
-                                const isPositive = item.netPnL >= 0
-                                const barHeight = Math.max(
-                                    Math.abs(item.netPnL) / 10,
-                                    8
-                                )
+                                    const paddingLeft = 55
+                                    const paddingRight = 25
+                                    const paddingTop = 25
+                                    const paddingBottom = 40
 
-                                return (
-                                    <div
-                                        className="dashboard-chart-item"
-                                        key={`${item.month}-${item.currency}`}
-                                    >
-                                        <div
-                                            className="dashboard-chart-bar"
-                                            style={{
-                                                height: `${barHeight}px`,
-                                                backgroundColor: isPositive
-                                                    ? '#20e0b2'
-                                                    : '#ff5f6d',
-                                                bottom: isPositive ? '50%' : 'auto',
-                                                top: isPositive ? 'auto' : '50%',
-                                            }}
-                                        />
+                                    const chartData = [
+                                        {
+                                            date: new Date(
+                                                new Date(equityCurve[0].date).getTime() - 86400000
+                                            ),
+                                            cumulativePnL: 0,
+                                        },
+                                        ...equityCurve,
+                                    ]
 
-                                        <div
-                                            className="dashboard-chart-value"
-                                            style={{
-                                                bottom: isPositive
-                                                    ? `calc(50% + ${barHeight + 10}px)`
-                                                    : 'auto',
-                                                top: isPositive
-                                                    ? 'auto'
-                                                    : `calc(50% + ${barHeight + 10}px)`,
-                                            }}
+                                    const values = chartData.map(
+                                        (point) => point.cumulativePnL
+                                    )
+
+                                    const minValue = Math.min(0, ...values)
+                                    const maxValue = Math.max(0, ...values)
+
+                                    const valueRange = maxValue - minValue || 1
+
+                                    const dates = chartData.map(
+                                        (point) => new Date(point.date).getTime()
+                                    )
+
+                                    const minDate = Math.min(...dates)
+                                    const maxDate = Math.max(...dates)
+
+                                    const dateRange = maxDate - minDate || 1
+
+                                    const getY = (value) => {
+                                        return (
+                                            chartHeight -
+                                            paddingBottom -
+                                            ((value - minValue) / valueRange) *
+                                            (chartHeight - paddingTop - paddingBottom)
+                                        )
+                                    }
+
+                                    const getX = (date) => {
+                                        return (
+                                            paddingLeft +
+                                            ((new Date(date).getTime() - minDate) / dateRange) *
+                                            (chartWidth - paddingLeft - paddingRight)
+                                        )
+                                    }
+
+                                    const points = chartData.map((point) => ({
+                                        ...point,
+                                        x: getX(point.date),
+                                        y: getY(point.cumulativePnL),
+                                    }))
+
+                                    const linePath = points
+                                        .map((point, index) => {
+                                            return `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+                                        })
+                                        .join(' ')
+
+                                    const areaPath = `
+                ${linePath}
+                L ${points[points.length - 1].x} ${chartHeight - paddingBottom}
+                L ${points[0].x} ${chartHeight - paddingBottom}
+                Z
+            `
+
+                                    const zeroY = getY(0)
+
+                                    const yTicks = 5
+
+                                    const yAxisValues = Array.from(
+                                        { length: yTicks },
+                                        (_, index) => {
+                                            return (
+                                                maxValue -
+                                                (index / (yTicks - 1)) *
+                                                (maxValue - minValue)
+                                            )
+                                        }
+                                    )
+
+                                    return (
+                                        <svg
+                                            className="dashboard-equity-svg"
+                                            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                                            preserveAspectRatio="none"
                                         >
-                                            {item.netPnL.toFixed(0)}
-                                        </div>
+                                            <defs>
+                                                <linearGradient
+                                                    id="equityGradient"
+                                                    x1="0"
+                                                    y1="0"
+                                                    x2="0"
+                                                    y2="1"
+                                                >
+                                                    <stop
+                                                        offset="0%"
+                                                        stopColor="#20e0b2"
+                                                        stopOpacity="0.22"
+                                                    />
 
-                                        <div
-                                            className="dashboard-chart-label"
-                                            style={{
-                                                top: isPositive
-                                                    ? 'auto'
-                                                    : `calc(50% + ${barHeight + 35}px)`,
-                                                bottom: isPositive ? '0' : 'auto',
-                                            }}
-                                        >
-                                            {item.month}
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                                                    <stop
+                                                        offset="100%"
+                                                        stopColor="#20e0b2"
+                                                        stopOpacity="0"
+                                                    />
+                                                </linearGradient>
+                                            </defs>
+
+                                            {/* Horizontal grid */}
+                                            {yAxisValues.map((value, index) => {
+                                                const y = getY(value)
+
+                                                return (
+                                                    <g key={`grid-${index}`}>
+                                                        <line
+                                                            x1={paddingLeft}
+                                                            y1={y}
+                                                            x2={chartWidth - paddingRight}
+                                                            y2={y}
+                                                            className="dashboard-equity-grid-line"
+                                                        />
+
+                                                        <text
+                                                            x={paddingLeft - 10}
+                                                            y={y + 4}
+                                                            textAnchor="end"
+                                                            className="dashboard-equity-axis-label"
+                                                        >
+                                                            {Math.round(value).toLocaleString()}
+                                                        </text>
+                                                    </g>
+                                                )
+                                            })}
+
+                                            {/* Vertical grid */}
+                                            {points.map((point, index) => (
+                                                <line
+                                                    key={`vertical-${index}`}
+                                                    x1={point.x}
+                                                    y1={paddingTop}
+                                                    x2={point.x}
+                                                    y2={chartHeight - paddingBottom}
+                                                    className="dashboard-equity-grid-line vertical"
+                                                />
+                                            ))}
+
+                                            {/* Zero line */}
+                                            <line
+                                                x1={paddingLeft}
+                                                y1={zeroY}
+                                                x2={chartWidth - paddingRight}
+                                                y2={zeroY}
+                                                className="dashboard-equity-zero-line"
+                                            />
+
+                                            {/* Area */}
+                                            <path
+                                                d={areaPath}
+                                                className="dashboard-equity-area"
+                                            />
+
+                                            {/* Main curve */}
+                                            <path
+                                                d={linePath}
+                                                className="dashboard-equity-line"
+                                            />
+
+                                            {/* Important points */}
+                                            {points.map((point, index) => {
+                                                const isFirst = index === 0
+                                                const isLast = index === points.length - 1
+                                                const isExtreme =
+                                                    point.cumulativePnL === minValue ||
+                                                    point.cumulativePnL === maxValue
+
+                                                if (
+                                                    !isFirst &&
+                                                    !isLast &&
+                                                    !isExtreme
+                                                ) {
+                                                    return null
+                                                }
+
+                                                return (
+                                                    <g
+                                                        key={`point-${index}`}
+                                                    >
+                                                        <circle
+                                                            cx={point.x}
+                                                            cy={point.y}
+                                                            r="4.5"
+                                                            className="dashboard-equity-dot"
+                                                        />
+
+                                                        <text
+                                                            x={point.x}
+                                                            y={point.y - 12}
+                                                            textAnchor="middle"
+                                                            className="dashboard-equity-value"
+                                                        >
+                                                            {point.cumulativePnL.toFixed(0)}
+                                                        </text>
+                                                    </g>
+                                                )
+                                            })}
+
+                                            {/* Date labels */}
+                                            {points.map((point, index) => {
+                                                const date = new Date(point.date)
+
+                                                const label = date.toLocaleDateString(
+                                                    'en-IN',
+                                                    {
+                                                        day: '2-digit',
+                                                        month: 'short',
+                                                    }
+                                                )
+
+                                                const shouldShow =
+                                                    index === 0 ||
+                                                    index === points.length - 1 ||
+                                                    index % Math.ceil(points.length / 5) === 0
+
+                                                if (!shouldShow) {
+                                                    return null
+                                                }
+
+                                                return (
+                                                    <text
+                                                        key={`date-${index}`}
+                                                        x={point.x}
+                                                        y={chartHeight - 12}
+                                                        textAnchor="middle"
+                                                        className="dashboard-equity-date"
+                                                    >
+                                                        {label}
+                                                    </text>
+                                                )
+                                            })}
+                                        </svg>
+                                    )
+                                })()
+                            )}
                         </div>
                     </section>
                     <section className="dashboard-card dashboard-strategy-section">
@@ -374,8 +611,8 @@ function Dashboard() {
 
                                     <p
                                         className={`dashboard-strategy-pnl ${strategy.netPnL >= 0
-                                                ? 'is-positive'
-                                                : 'is-negative'
+                                            ? 'is-positive'
+                                            : 'is-negative'
                                             }`}
                                     >
                                         {strategy.netPnL.toFixed(2)}

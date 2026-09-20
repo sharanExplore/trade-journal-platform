@@ -368,3 +368,106 @@
 .dashboard-strategy-pnl.is-negative {
     color: #ff5f6d;
 }
+
+.dashboard-range-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.dashboard-range-button {
+    border: 1px solid #29474d;
+    background: #12272c;
+    color: #8da4a8;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dashboard-range-button:hover {
+    color: #f5f7f7;
+    border-color: #20e0b2;
+}
+
+.dashboard-range-button.active {
+    background: #20e0b2;
+    color: #071b19;
+    border-color: #20e0b2;
+}
+
+.dashboard-equity-chart {
+    margin-top: 20px;
+    height: 320px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.dashboard-equity-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.dashboard-equity-grid-line {
+    stroke: #18373d;
+    stroke-width: 1;
+    stroke-dasharray: 3 5;
+    opacity: 0.65;
+}
+
+.dashboard-equity-grid-line.vertical {
+    opacity: 0.35;
+}
+
+.dashboard-equity-zero-line {
+    stroke: #6f8589;
+    stroke-width: 1;
+    stroke-dasharray: 5 5;
+    opacity: 0.7;
+}
+
+.dashboard-equity-area {
+    fill: url(#equityGradient);
+}
+
+.dashboard-equity-line {
+    fill: none;
+    stroke: #20e0b2;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.dashboard-equity-dot {
+    fill: #20e0b2;
+    stroke: #082126;
+    stroke-width: 3;
+}
+
+.dashboard-equity-value {
+    fill: #20e0b2;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.dashboard-equity-axis-label {
+    fill: #587176;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.dashboard-equity-date {
+    fill: #587176;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.dashboard-chart-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6f8589;
+}
