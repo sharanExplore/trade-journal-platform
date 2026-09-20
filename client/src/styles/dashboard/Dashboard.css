@@ -318,3 +318,53 @@
     font-size: 12px;
     white-space: nowrap;
 }
+
+.dashboard-strategy-section {
+    margin-top: 24px;
+    padding: 24px;
+}
+
+.dashboard-strategy-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-strategy-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid #183238;
+}
+
+.dashboard-strategy-row:last-child {
+    border-bottom: none;
+}
+
+.dashboard-strategy-name {
+    margin: 0 0 6px;
+    color: #f5f7f7;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.dashboard-strategy-trades {
+    margin: 0;
+    color: #6f8589;
+    font-size: 13px;
+}
+
+.dashboard-strategy-pnl {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.dashboard-strategy-pnl.is-positive {
+    color: #20e0b2;
+}
+
+.dashboard-strategy-pnl.is-negative {
+    color: #ff5f6d;
+}

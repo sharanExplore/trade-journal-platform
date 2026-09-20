@@ -9,6 +9,7 @@ function Dashboard() {
     const inrMonthlyStats = monthlyStats.filter(
         (item) => item.currency === 'INR'
     )
+    const [strategyStats, setStrategyStats] = useState([])
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -68,6 +69,19 @@ function Dashboard() {
             })
             .catch((error) => {
                 console.error('Error fetching monthly stats:', error)
+            })
+        fetch('http://localhost:5000/api/trades/stats/strategies', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Strategy stats:', data)
+                setStrategyStats(data.strategies)
+            })
+            .catch((error) => {
+                console.error('Error fetching strategy stats:', error)
             })
     }, [])
 
@@ -331,6 +345,43 @@ function Dashboard() {
                                     </div>
                                 )
                             })}
+                        </div>
+                    </section>
+                    <section className="dashboard-card dashboard-strategy-section">
+                        <div className="dashboard-section-header">
+                            <div>
+                                <h2>Strategy Performance</h2>
+                                <p>Your results by trading strategy</p>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-strategy-list">
+                            {strategyStats.map((strategy) => (
+                                <div
+                                    className="dashboard-strategy-row"
+                                    key={strategy.strategyName}
+                                >
+                                    <div>
+                                        <p className="dashboard-strategy-name">
+                                            {strategy.strategyName}
+                                        </p>
+
+                                        <p className="dashboard-strategy-trades">
+                                            {strategy.tradeCount}{' '}
+                                            {strategy.tradeCount === 1 ? 'trade' : 'trades'}
+                                        </p>
+                                    </div>
+
+                                    <p
+                                        className={`dashboard-strategy-pnl ${strategy.netPnL >= 0
+                                                ? 'is-positive'
+                                                : 'is-negative'
+                                            }`}
+                                    >
+                                        {strategy.netPnL.toFixed(2)}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </section>
                 </main>
