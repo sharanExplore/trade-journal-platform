@@ -698,4 +698,106 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     }
 });
 
+router.get("/stats/equity-curve", authMiddleware, async (req, res) => {
+    try {
+        const { range } = req.query;
+
+        const validRanges = [
+            "7D",
+            "1W",
+            "1M",
+            "3M",
+            "6M",
+            "1Y",
+            "ALL",
+        ];
+
+        if (range !== undefined && !validRanges.includes(range)) {
+            return res.status(400).json({
+                message: "Invalid range filter",
+            });
+        }
+
+        const selectedRange = range || "ALL";
+
+        const filter = {
+            user: req.userId,
+            status: "CLOSED",
+            currency: {
+                $in: ["INR", "USD"],
+            },
+        };
+
+        if (selectedRange !== "ALL") {
+            const startDate = new Date();
+
+            switch (selectedRange) {
+                case "7D":
+                    startDate.setDate(startDate.getDate() - 7);
+                    break;
+
+                case "1W":
+                    startDate.setDate(startDate.getDate() - 7);
+                    break;
+
+                case "1M":
+                    startDate.setMonth(startDate.getMonth() - 1);
+                    break;
+
+                case "3M":
+                    startDate.setMonth(startDate.getMonth() - 3);
+                    break;
+
+                case "6M":
+                    startDate.setMonth(startDate.getMonth() - 6);
+                    break;
+
+                case "1Y":
+                    startDate.setFullYear(startDate.getFullYear() - 1);
+                    break;
+            }
+
+            filter.exitDate = {
+                $gte: startDate,
+            };
+        }
+
+        const trades = await Trade.find(filter).sort({
+            exitDate: 1,
+        });
+
+        const USD_TO_INR = 95;
+
+        let cumulativePnL = 0;
+
+        const equityCurve = trades.map((trade) => {
+            const pnl = calculatePnL(trade);
+
+            const pnlInINR =
+                trade.currency === "USD"
+                    ? pnl * USD_TO_INR
+                    : pnl;
+
+            cumulativePnL += pnlInINR;
+
+            return {
+                date: trade.exitDate,
+                pnl: pnlInINR,
+                cumulativePnL,
+            };
+        });
+
+        return res.status(200).json({
+            range: selectedRange,
+            currency: "INR",
+            equityCurve,
+        });
+    } catch (error) {
+        console.error("Get equity curve error:", error);
+
+        return res.status(500).json({
+            message: "Server error while fetching equity curve",
+        });
+    }
+});
 module.exports = router;
