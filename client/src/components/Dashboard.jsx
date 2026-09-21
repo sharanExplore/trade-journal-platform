@@ -326,6 +326,36 @@ function Dashboard() {
                         )}
                     </section>
 
+                    {/* Quick Actions */}
+                    <section className="dashboard-card dashboard-quick-actions">
+                        <div className="dashboard-section-header">
+                            <div>
+                                <h2>Quick Actions</h2>
+                                <p>Manage your trading activity</p>
+                            </div>
+                        </div>
+
+                        <div className="dashboard-quick-actions-grid">
+                            <button className="dashboard-action-button primary">
+                                <span className="dashboard-action-icon">+</span>
+
+                                <span>
+                                    <strong>Add Trade</strong>
+                                    <small>Record a new trade</small>
+                                </span>
+                            </button>
+
+                            <button className="dashboard-action-button">
+                                <span className="dashboard-action-icon">↗</span>
+
+                                <span>
+                                    <strong>View All Trades</strong>
+                                    <small>See your complete trade history</small>
+                                </span>
+                            </button>
+                        </div>
+                    </section>
+
                     {/* Recent Trades */}
                     <section className="dashboard-card dashboard-trades">
                         <div className="dashboard-section-header">
