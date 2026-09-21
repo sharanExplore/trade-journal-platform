@@ -227,6 +227,104 @@ function Dashboard() {
                             </p>
                         </div>
                     </div>
+                    {/* Trade Distribution */}
+                    <section className="dashboard-card dashboard-distribution">
+                        <div className="dashboard-section-header">
+                            <div>
+                                <h2>Trade Distribution</h2>
+                                <p>Closed trade results</p>
+                            </div>
+                        </div>
+
+                        {stats ? (
+                            (() => {
+                                const closedTrades = stats.closedTrades || 0
+                                const winningTrades = stats.winningTrades || 0
+                                const losingTrades = stats.losingTrades || 0
+                                const breakevenTrades =
+                                    closedTrades - winningTrades - losingTrades
+
+                                const winPercentage =
+                                    closedTrades > 0
+                                        ? (winningTrades / closedTrades) * 100
+                                        : 0
+
+                                const lossPercentage =
+                                    closedTrades > 0
+                                        ? (losingTrades / closedTrades) * 100
+                                        : 0
+
+                                const breakevenPercentage =
+                                    closedTrades > 0
+                                        ? (breakevenTrades / closedTrades) * 100
+                                        : 0
+
+                                const winEnd = winPercentage
+                                const lossEnd = winPercentage + lossPercentage
+
+                                return (
+                                    <div className="dashboard-distribution-content">
+                                        <div className="dashboard-donut-wrapper">
+                                            <div
+                                                className="dashboard-donut"
+                                                style={{
+                                                    background: `conic-gradient(
+                                    #20e0b2 0% ${winEnd}%,
+                                    #ff5757 ${winEnd}% ${lossEnd}%,
+                                    #8b9ca3 ${lossEnd}% 100%
+                                )`,
+                                                }}
+                                            >
+                                                <div className="dashboard-donut-center">
+                                                    <strong>{closedTrades}</strong>
+                                                    <span>Trades</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="dashboard-distribution-legend">
+                                            <div className="dashboard-distribution-item">
+                                                <span className="dashboard-distribution-label">
+                                                    <span className="dashboard-distribution-dot win"></span>
+                                                    Win
+                                                </span>
+
+                                                <strong>
+                                                    {winningTrades} ({winPercentage.toFixed(0)}%)
+                                                </strong>
+                                            </div>
+
+                                            <div className="dashboard-distribution-item">
+                                                <span className="dashboard-distribution-label">
+                                                    <span className="dashboard-distribution-dot loss"></span>
+                                                    Loss
+                                                </span>
+
+                                                <strong>
+                                                    {losingTrades} ({lossPercentage.toFixed(0)}%)
+                                                </strong>
+                                            </div>
+
+                                            <div className="dashboard-distribution-item">
+                                                <span className="dashboard-distribution-label">
+                                                    <span className="dashboard-distribution-dot breakeven"></span>
+                                                    Breakeven
+                                                </span>
+
+                                                <strong>
+                                                    {breakevenTrades} ({breakevenPercentage.toFixed(0)}%)
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })()
+                        ) : (
+                            <p className="dashboard-chart-empty">
+                                Loading trade distribution...
+                            </p>
+                        )}
+                    </section>
 
                     {/* Recent Trades */}
                     <section className="dashboard-card dashboard-trades">
