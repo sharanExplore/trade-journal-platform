@@ -173,7 +173,7 @@
 .dashboard-feature-grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
-    grid-template-rows: 245px 185px;
+    grid-template-rows: 235px 205px;
     gap: 14px;
     margin-top: 16px;
 }
@@ -183,7 +183,7 @@
    ========================================================= */
 
 .dashboard-section-header {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .dashboard-section-header h2 {
@@ -205,7 +205,7 @@
 .dashboard-feature-grid .dashboard-performance-chart {
     grid-column: 1;
     grid-row: 1;
-    height: 245px;
+    height: 235px;
     margin: 0;
     padding: 18px 20px;
     overflow: hidden;
@@ -241,7 +241,7 @@
 
 .dashboard-equity-chart {
     margin-top: 8px;
-    height: 165px;
+    height: 150px;
     width: 100%;
     overflow: hidden;
 }
@@ -321,7 +321,7 @@
 .dashboard-feature-grid .dashboard-distribution {
     grid-column: 2;
     grid-row: 1;
-    height: 245px;
+    height: 235px;
     margin: 0;
     padding: 18px;
     max-width: none;
@@ -332,7 +332,7 @@
     display: flex;
     align-items: center;
     gap: 22px;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .dashboard-donut-wrapper {
@@ -433,7 +433,7 @@
 .dashboard-feature-grid .dashboard-trades {
     grid-column: 1;
     grid-row: 2;
-    height: 185px;
+    height: 205px;
     margin: 0;
     padding: 16px 20px;
     overflow: hidden;
@@ -441,7 +441,7 @@
 
 .dashboard-table-wrapper {
     width: 100%;
-    max-height: 105px;
+    max-height: 125px;
     overflow-y: auto;
     overflow-x: auto;
 }
@@ -490,7 +490,7 @@
 .dashboard-feature-grid .dashboard-quick-actions {
     grid-column: 2;
     grid-row: 2;
-    height: 185px;
+    height: 205px;
     margin: 0;
     padding: 16px;
     overflow: hidden;
@@ -566,111 +566,6 @@
 
 .dashboard-action-button.primary small {
     color: #17483f;
-}
-
-/* =========================================================
-   Old Monthly / Strategy Components
-   These are kept styled if they are still present in JSX.
-   They should NOT be part of the main Dashboard overview.
-   ========================================================= */
-
-.dashboard-performance {
-    margin-top: 20px;
-    padding: 20px;
-}
-
-.dashboard-monthly-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-monthly-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #183238;
-}
-
-.dashboard-monthly-item:last-child {
-    border-bottom: none;
-}
-
-.dashboard-month {
-    margin: 0;
-    color: #f5f7f7;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.dashboard-monthly-meta {
-    margin: 5px 0 0;
-    color: #6f8589;
-    font-size: 12px;
-}
-
-.dashboard-monthly-pnl {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.dashboard-monthly-pnl.is-positive {
-    color: #20e0b2;
-}
-
-.dashboard-monthly-pnl.is-negative {
-    color: #ff6b6b;
-}
-
-.dashboard-strategy-section {
-    margin-top: 20px;
-    padding: 20px;
-}
-
-.dashboard-strategy-list {
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-.dashboard-strategy-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid #183238;
-}
-
-.dashboard-strategy-row:last-child {
-    border-bottom: none;
-}
-
-.dashboard-strategy-name {
-    margin: 0 0 5px;
-    color: #f5f7f7;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.dashboard-strategy-trades {
-    margin: 0;
-    color: #6f8589;
-    font-size: 12px;
-}
-
-.dashboard-strategy-pnl {
-    margin: 0;
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.dashboard-strategy-pnl.is-positive {
-    color: #20e0b2;
-}
-
-.dashboard-strategy-pnl.is-negative {
-    color: #ff5f6d;
 }
 
 /* =========================================================
