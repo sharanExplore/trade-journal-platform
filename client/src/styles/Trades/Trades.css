@@ -1,3 +1,7 @@
+/* =========================================================
+   Trades Page
+   ========================================================= */
+
 .trades-page {
     height: 100vh;
     display: flex;
@@ -5,6 +9,10 @@
     background: #071014;
     color: #f5f7f7;
 }
+
+/* =========================================================
+   Sidebar
+   ========================================================= */
 
 .trades-sidebar {
     width: 220px;
@@ -41,10 +49,18 @@
     cursor: pointer;
 }
 
+.trades-nav-item:hover {
+    color: #f5f7f7;
+}
+
 .trades-nav-item.active {
     color: #20e0b2;
     background: #0d3936;
 }
+
+/* =========================================================
+   Main Content
+   ========================================================= */
 
 .trades-content {
     flex: 1;
@@ -83,8 +99,13 @@
     font-size: 14px;
 }
 
+/* =========================================================
+   Main
+   ========================================================= */
+
 .trades-main {
     padding: 32px;
+    box-sizing: border-box;
 }
 
 .trades-page-heading {
@@ -96,13 +117,18 @@
 .trades-page-heading h1 {
     margin: 0;
     font-size: 36px;
+    line-height: 1.1;
 }
 
 .trades-page-heading p {
-    margin: 6px 0 0;
+    margin: 8px 0 0;
     color: #8ea5a8;
     font-size: 15px;
 }
+
+/* =========================================================
+   Header Buttons
+   ========================================================= */
 
 .trades-heading-actions {
     display: flex;
@@ -124,11 +150,23 @@
     color: #071b19;
 }
 
+.trades-add-button:hover {
+    background: #19cfa4;
+}
+
 .trades-export-button {
     border: 1px solid #29474d;
     background: #10262b;
     color: #d8e2e3;
 }
+
+.trades-export-button:hover {
+    border-color: #20e0b2;
+}
+
+/* =========================================================
+   Filter Tabs
+   ========================================================= */
 
 .trades-filter-tabs {
     display: flex;
@@ -156,4 +194,125 @@
     border-color: #20e0b2;
     background: #0d3936;
     color: #20e0b2;
+}
+
+/* =========================================================
+   Trades Table
+   ========================================================= */
+
+.trades-table-card {
+    width: 100%;
+    margin-top: 16px;
+    background: #0b1b1f;
+    border: 1px solid #183238;
+    border-radius: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.trades-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.trades-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0b1b1f;
+}
+
+.trades-table th {
+    padding: 13px 16px;
+    text-align: left;
+    color: #6f8589;
+    background: #0b1b1f;
+    border-bottom: 1px solid #183238;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.trades-table td {
+    padding: 14px 16px;
+    color: #d8e2e3;
+    background: #0b1b1f;
+    border-bottom: 1px solid #12282d;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.trades-table tbody tr:hover td {
+    background: #0d2024;
+}
+
+.trades-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   Trade Colors
+   ========================================================= */
+
+.trade-type-long {
+    color: #20e0b2 !important;
+    font-weight: 600;
+}
+
+.trade-type-short {
+    color: #ff5757 !important;
+    font-weight: 600;
+}
+
+.trade-pnl-positive {
+    color: #20e0b2 !important;
+    font-weight: 600;
+}
+
+.trade-pnl-negative {
+    color: #ff5757 !important;
+    font-weight: 600;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .trades-sidebar {
+        width: 180px;
+    }
+
+    .trades-main {
+        padding: 24px;
+    }
+
+    .trades-page-heading {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 700px) {
+    .trades-sidebar {
+        width: 150px;
+    }
+
+    .trades-header {
+        padding: 0 18px;
+    }
+
+    .trades-search {
+        width: 220px;
+    }
+
+    .trades-main {
+        padding: 18px;
+    }
+
+    .trades-page-heading {
+        flex-direction: column;
+    }
+
+    .trades-filter-tabs {
+        flex-wrap: wrap;
+    }
 }

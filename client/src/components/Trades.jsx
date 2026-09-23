@@ -1,6 +1,36 @@
+import { useEffect, useState } from 'react'
 import '../styles/trades/Trades.css'
 
 function Trades({ onNavigate }) {
+    const [trades, setTrades] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+
+        fetch('http://localhost:5000/api/trades', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch trades')
+                }
+
+                return response.json()
+            })
+            .then((data) => {
+                setTrades(data.trades)
+                setLoading(false)
+            })
+            .catch((error) => {
+                console.error('Error fetching trades:', error)
+                setError('Unable to load trades')
+                setLoading(false)
+            })
+    }, [])
     return (
         <div className="trades-page">
             <aside className="trades-sidebar">
@@ -80,6 +110,95 @@ function Trades({ onNavigate }) {
                         <button className="trades-filter-tab">
                             Breakeven
                         </button>
+                    </div>
+                    <div className="trades-table-card">
+                        <div className="trades-table-wrapper">
+                            <table className="trades-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Symbol</th>
+                                        <th>Type</th>
+                                        <th>Entry</th>
+                                        <th>Exit</th>
+                                        <th>Qty</th>
+                                        <th>P&amp;L</th>
+                                        <th>R:R</th>
+                                        <th>Strategy</th>
+                                        <th>Notes</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {loading && (
+                                        <tr>
+                                            <td colSpan="11">Loading trades...</td>
+                                        </tr>
+                                    )}
+
+                                    {!loading && error && (
+                                        <tr>
+                                            <td colSpan="11">{error}</td>
+                                        </tr>
+                                    )}
+
+                                    {!loading && !error && trades.length === 0 && (
+                                        <tr>
+                                            <td colSpan="11">No trades found</td>
+                                        </tr>
+                                    )}
+
+                                    {!loading &&
+                                        !error &&
+                                        trades.map((trade) => (
+                                            <tr key={trade.id}>
+                                                <td>
+                                                    {new Date(trade.entryDate).toLocaleDateString()}
+                                                </td>
+
+                                                <td>{trade.symbol}</td>
+
+                                                <td
+                                                    className={
+                                                        trade.tradeType === 'BUY'
+                                                            ? 'trade-type-long'
+                                                            : 'trade-type-short'
+                                                    }
+                                                >
+                                                    {trade.tradeType === 'BUY' ? 'Long' : 'Short'}
+                                                </td>
+
+                                                <td>{trade.entryPrice}</td>
+
+                                                <td>{trade.exitPrice ?? '-'}</td>
+
+                                                <td>{trade.quantity}</td>
+
+                                                <td
+                                                    className={
+                                                        trade.pnl > 0
+                                                            ? 'trade-pnl-positive'
+                                                            : trade.pnl < 0
+                                                                ? 'trade-pnl-negative'
+                                                                : ''
+                                                    }
+                                                >
+                                                    {trade.pnl ?? '-'}
+                                                </td>
+
+                                                <td>-</td>
+
+                                                <td>{trade.strategyName}</td>
+
+                                                <td>-</td>
+
+                                                <td>{trade.status}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </main>
             </section>
