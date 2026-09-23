@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import '../styles/dashboard/Dashboard.css'
 
-function Dashboard() {
+function Dashboard({ onNavigate }) {
     const [trades, setTrades] = useState([])
     const [stats, setStats] = useState(null)
     const [user, setUser] = useState(null)
@@ -116,7 +116,10 @@ function Dashboard() {
                         Dashboard
                     </div>
 
-                    <div className="dashboard-nav-item">
+                    <div
+                        className="dashboard-nav-item"
+                        onClick={() => onNavigate('trades')}
+                    >
                         Trades
                     </div>
 

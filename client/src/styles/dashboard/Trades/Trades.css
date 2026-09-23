@@ -1,0 +1,159 @@
+.trades-page {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+    background: #071014;
+    color: #f5f7f7;
+}
+
+.trades-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    height: 100vh;
+    padding: 24px 14px;
+    box-sizing: border-box;
+    background: #09171b;
+    border-right: 1px solid #183238;
+}
+
+.trades-logo {
+    padding: 0 12px;
+    margin-bottom: 32px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.trades-logo span {
+    color: #20e0b2;
+}
+
+.trades-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.trades-nav-item {
+    padding: 11px 13px;
+    border-radius: 8px;
+    color: #8ea5a8;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.trades-nav-item.active {
+    color: #20e0b2;
+    background: #0d3936;
+}
+
+.trades-content {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.trades-header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #183238;
+}
+
+.trades-search {
+    width: 320px;
+    padding: 10px 14px;
+    border: 1px solid #24454b;
+    border-radius: 8px;
+    background: #0c1c20;
+    color: #f5f7f7;
+    outline: none;
+    font-size: 14px;
+}
+
+.trades-search::placeholder {
+    color: #6f8589;
+}
+
+.trades-user {
+    color: #d8e2e3;
+    font-size: 14px;
+}
+
+.trades-main {
+    padding: 32px;
+}
+
+.trades-page-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.trades-page-heading h1 {
+    margin: 0;
+    font-size: 36px;
+}
+
+.trades-page-heading p {
+    margin: 6px 0 0;
+    color: #8ea5a8;
+    font-size: 15px;
+}
+
+.trades-heading-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.trades-add-button,
+.trades-export-button {
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.trades-add-button {
+    border: 1px solid #20e0b2;
+    background: #20e0b2;
+    color: #071b19;
+}
+
+.trades-export-button {
+    border: 1px solid #29474d;
+    background: #10262b;
+    color: #d8e2e3;
+}
+
+.trades-filter-tabs {
+    display: flex;
+    gap: 6px;
+    margin-top: 22px;
+}
+
+.trades-filter-tab {
+    border: 1px solid #1d3940;
+    background: #0d1f24;
+    color: #8da4a8;
+    padding: 9px 17px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.trades-filter-tab:hover {
+    border-color: #20e0b2;
+    color: #f5f7f7;
+}
+
+.trades-filter-tab.active {
+    border-color: #20e0b2;
+    background: #0d3936;
+    color: #20e0b2;
+}
