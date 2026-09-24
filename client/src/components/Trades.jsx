@@ -5,11 +5,37 @@ function Trades({ onNavigate }) {
     const [trades, setTrades] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [activeFilter, setActiveFilter] = useState('all')
 
     useEffect(() => {
         const token = localStorage.getItem('token')
 
-        fetch('http://localhost:5000/api/trades', {
+        let url = 'http://localhost:5000/api/trades'
+
+        if (activeFilter === 'long') {
+            url += '?tradeType=BUY'
+        }
+
+        if (activeFilter === 'short') {
+            url += '?tradeType=SELL'
+        }
+
+        if (activeFilter === 'win') {
+            url += '?status=CLOSED'
+        }
+
+        if (activeFilter === 'loss') {
+            url += '?status=CLOSED'
+        }
+
+        if (activeFilter === 'breakeven') {
+            url += '?status=CLOSED'
+        }
+
+        setLoading(true)
+        setError('')
+
+        fetch(url, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -22,7 +48,27 @@ function Trades({ onNavigate }) {
                 return response.json()
             })
             .then((data) => {
-                setTrades(data.trades)
+                let filteredTrades = data.trades
+
+                if (activeFilter === 'win') {
+                    filteredTrades = filteredTrades.filter(
+                        (trade) => trade.pnl > 0
+                    )
+                }
+
+                if (activeFilter === 'loss') {
+                    filteredTrades = filteredTrades.filter(
+                        (trade) => trade.pnl < 0
+                    )
+                }
+
+                if (activeFilter === 'breakeven') {
+                    filteredTrades = filteredTrades.filter(
+                        (trade) => trade.pnl === 0
+                    )
+                }
+
+                setTrades(filteredTrades)
                 setLoading(false)
             })
             .catch((error) => {
@@ -30,7 +76,7 @@ function Trades({ onNavigate }) {
                 setError('Unable to load trades')
                 setLoading(false)
             })
-    }, [])
+    }, [activeFilter])
     return (
         <div className="trades-page">
             <aside className="trades-sidebar">
@@ -87,27 +133,51 @@ function Trades({ onNavigate }) {
                     </div>
 
                     <div className="trades-filter-tabs">
-                        <button className="trades-filter-tab active">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'all' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('all')}
+                        >
                             All Trades
                         </button>
 
-                        <button className="trades-filter-tab">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'long' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('long')}
+                        >
                             Long
                         </button>
 
-                        <button className="trades-filter-tab">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'short' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('short')}
+                        >
                             Short
                         </button>
 
-                        <button className="trades-filter-tab">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'win' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('win')}
+                        >
                             Win
                         </button>
 
-                        <button className="trades-filter-tab">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'loss' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('loss')}
+                        >
                             Loss
                         </button>
 
-                        <button className="trades-filter-tab">
+                        <button
+                            className={`trades-filter-tab ${activeFilter === 'breakeven' ? 'active' : ''
+                                }`}
+                            onClick={() => setActiveFilter('breakeven')}
+                        >
                             Breakeven
                         </button>
                     </div>
