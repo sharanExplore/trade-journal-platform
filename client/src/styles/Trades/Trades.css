@@ -316,3 +316,40 @@
         flex-wrap: wrap;
     }
 }
+
+.trades-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+}
+
+.trades-pagination-button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid #1d3940;
+    border-radius: 7px;
+    background: #0d1f24;
+    color: #8da4a8;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.trades-pagination-button:hover:not(:disabled) {
+    border-color: #20e0b2;
+    color: #20e0b2;
+}
+
+.trades-pagination-button.active {
+    border-color: #20e0b2;
+    background: #20e0b2;
+    color: #071b19;
+}
+
+.trades-pagination-button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
