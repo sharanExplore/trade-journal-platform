@@ -66,7 +66,8 @@
     flex: 1;
     min-width: 0;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .trades-header {
@@ -105,6 +106,7 @@
 
 .trades-main {
     padding: 32px;
+    padding-bottom: 40px;
     box-sizing: border-box;
 }
 
@@ -253,14 +255,31 @@
    Trade Colors
    ========================================================= */
 
+.trade-type-long,
+.trade-type-short {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 58px;
+    height: 26px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
 .trade-type-long {
     color: #20e0b2 !important;
-    font-weight: 600;
+    background: rgba(32, 224, 178, 0.12) !important;
+    border: 1px solid rgba(32, 224, 178, 0.35);
 }
 
 .trade-type-short {
     color: #ff5757 !important;
-    font-weight: 600;
+    background: rgba(255, 87, 87, 0.10) !important;
+    border: 1px solid rgba(255, 87, 87, 0.40);
 }
 
 .trade-pnl-positive {
