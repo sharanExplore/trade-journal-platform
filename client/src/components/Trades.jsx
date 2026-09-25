@@ -12,7 +12,7 @@ function Trades({ onNavigate }) {
     useEffect(() => {
         const token = localStorage.getItem('token')
 
-        let url = `http://localhost:5000/api/trades?page=${currentPage}&limit=10`
+        let url = `http://localhost:5000/api/trades?page=${currentPage}&limit=8`
 
         if (activeFilter === 'long') {
             url += '&tradeType=BUY'
@@ -251,14 +251,16 @@ function Trades({ onNavigate }) {
 
                                                 <td>{trade.symbol}</td>
 
-                                                <td
-                                                    className={
-                                                        trade.tradeType === 'BUY'
-                                                            ? 'trade-type-long'
-                                                            : 'trade-type-short'
-                                                    }
-                                                >
-                                                    {trade.tradeType === 'BUY' ? 'Long' : 'Short'}
+                                                <td>
+                                                    <span
+                                                        className={
+                                                            trade.tradeType === 'BUY'
+                                                                ? 'trade-type-long'
+                                                                : 'trade-type-short'
+                                                        }
+                                                    >
+                                                        {trade.tradeType === 'BUY' ? 'Long' : 'Short'}
+                                                    </span>
                                                 </td>
 
                                                 <td>{trade.entryPrice}</td>
