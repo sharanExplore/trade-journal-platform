@@ -219,6 +219,7 @@ function Trades({ onNavigate }) {
                                         <th>Strategy</th>
                                         <th>Notes</th>
                                         <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
 
@@ -288,6 +289,23 @@ function Trades({ onNavigate }) {
                                                 <td>-</td>
 
                                                 <td>{trade.status}</td>
+                                                <td>
+                                                    <div className="trade-actions">
+                                                        <button
+                                                            className="trade-action-button edit"
+                                                            title="Edit trade"
+                                                        >
+                                                            ✎
+                                                        </button>
+
+                                                        <button
+                                                            className="trade-action-button delete"
+                                                            title="Delete trade"
+                                                        >
+                                                            🗑
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))}
                                 </tbody>
