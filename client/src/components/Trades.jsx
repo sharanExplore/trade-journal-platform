@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import '../styles/trades/Trades.css'
+import EditTradeModal from "./EditTradeModal.jsx";
 
 function Trades({ onNavigate }) {
     const [trades, setTrades] = useState([])
@@ -8,6 +9,14 @@ function Trades({ onNavigate }) {
     const [activeFilter, setActiveFilter] = useState('all')
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const [editingTrade, setEditingTrade] = useState(null);
+    const handleEdit = (trade) => {
+        setEditingTrade(trade);
+    };
+
+    const handleCloseEdit = () => {
+        setEditingTrade(null);
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -294,6 +303,7 @@ function Trades({ onNavigate }) {
                                                         <button
                                                             className="trade-action-button edit"
                                                             title="Edit trade"
+                                                            onClick={() => handleEdit(trade)}
                                                         >
                                                             ✎
                                                         </button>
@@ -343,6 +353,10 @@ function Trades({ onNavigate }) {
                             ›
                         </button>
                     </div>
+                    <EditTradeModal
+                        trade={editingTrade}
+                        onClose={handleCloseEdit}
+                    />
                 </main>
             </section>
         </div>
