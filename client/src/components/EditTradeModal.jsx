@@ -183,7 +183,7 @@ function EditTradeModal({ trade, onClose }) {
                             notes,
                         })}
                     >
-                        ✓ Update Trade
+                        Update Trade
                     </button>
                 </div>
 
