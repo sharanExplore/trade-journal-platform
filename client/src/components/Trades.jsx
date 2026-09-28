@@ -11,6 +11,7 @@ function Trades({ onNavigate }) {
     const [totalPages, setTotalPages] = useState(1)
     const [editingTrade, setEditingTrade] = useState(null);
     const handleEdit = (trade) => {
+        console.log("EDIT TRADE DATA:", trade);
         setEditingTrade(trade);
     };
 
@@ -303,7 +304,10 @@ function Trades({ onNavigate }) {
                                                         <button
                                                             className="trade-action-button edit"
                                                             title="Edit trade"
-                                                            onClick={() => handleEdit(trade)}
+                                                            onClick={() => {
+                                                                console.log("BUTTON CLICKED");
+                                                                handleEdit(trade);
+                                                            }}
                                                         >
                                                             ✎
                                                         </button>

@@ -1,15 +1,68 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function EditTradeModal({ trade, onClose }) {
-    const [tradeType, setTradeType] = useState(trade?.tradeType || "BUY");
-    const [strategyName, setStrategyName] = useState(
-        trade?.strategyName || ""
-    );
-    const [entryPrice, setEntryPrice] = useState(trade?.entryPrice || "");
-    const [exitPrice, setExitPrice] = useState(trade?.exitPrice || "");
-    const [quantity, setQuantity] = useState(trade?.quantity || "");
+    const [tradeType, setTradeType] = useState("BUY");
+    const [strategyName, setStrategyName] = useState("");
+    const [entryPrice, setEntryPrice] = useState("");
+    const [exitPrice, setExitPrice] = useState("");
+    const [quantity, setQuantity] = useState("");
     const [rr, setRr] = useState("");
     const [notes, setNotes] = useState("");
+
+    useEffect(() => {
+        if (!trade) {
+            return;
+        }
+
+        setTradeType(trade.tradeType || "BUY");
+        setStrategyName(trade.strategyName || "");
+        setEntryPrice(trade.entryPrice ?? "");
+        setExitPrice(trade.exitPrice ?? "");
+        setQuantity(trade.quantity ?? "");
+        setRr("");
+        setNotes("");
+    }, [trade]);
+
+    const handleUpdate = async () => {
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/trades/${trade.id}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        tradeType,
+                        strategyName,
+                        entryPrice: Number(entryPrice),
+                        exitPrice:
+                            exitPrice === ""
+                                ? undefined
+                                : Number(exitPrice),
+                        quantity: Number(quantity),
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || "Failed to update trade"
+                );
+            }
+
+            console.log("Trade updated:", data);
+
+            onClose();
+        } catch (error) {
+            console.error("Update trade error:", error);
+        }
+    };
 
     if (!trade) {
         return null;
@@ -39,7 +92,9 @@ function EditTradeModal({ trade, onClose }) {
                         <label>Date</label>
                         <input
                             type="text"
-                            value={trade.entryDate}
+                            value={new Date(
+                                trade.entryDate
+                            ).toLocaleDateString()}
                             readOnly
                         />
                     </div>
@@ -163,6 +218,7 @@ function EditTradeModal({ trade, onClose }) {
                 </div>
 
                 <div className="edit-trade-footer">
+
                     <button
                         className="edit-trade-cancel"
                         onClick={onClose}
@@ -172,19 +228,11 @@ function EditTradeModal({ trade, onClose }) {
 
                     <button
                         className="edit-trade-update"
-                        onClick={() => console.log({
-                            tradeId: trade.id,
-                            tradeType,
-                            strategyName,
-                            entryPrice,
-                            exitPrice,
-                            quantity,
-                            rr,
-                            notes,
-                        })}
+                        onClick={handleUpdate}
                     >
-                        Update Trade
+                        ✓ Update Trade
                     </button>
+
                 </div>
 
             </div>
