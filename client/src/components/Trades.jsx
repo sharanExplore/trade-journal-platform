@@ -19,6 +19,8 @@ function Trades({ onNavigate }) {
         setEditingTrade(null);
     };
 
+    const [refreshKey, setRefreshKey] = useState(0);
+
     useEffect(() => {
         const token = localStorage.getItem('token')
 
@@ -90,7 +92,7 @@ function Trades({ onNavigate }) {
                 setError('Unable to load trades')
                 setLoading(false)
             })
-    }, [activeFilter, currentPage])
+    }, [activeFilter, currentPage, refreshKey])
     return (
         <div className="trades-page">
             <aside className="trades-sidebar">
@@ -360,6 +362,7 @@ function Trades({ onNavigate }) {
                     <EditTradeModal
                         trade={editingTrade}
                         onClose={handleCloseEdit}
+                        onUpdated={() => setRefreshKey((value) => value + 1)}
                     />
                 </main>
             </section>

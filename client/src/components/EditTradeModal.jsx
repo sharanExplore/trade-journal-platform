@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function EditTradeModal({ trade, onClose }) {
+function EditTradeModal({ trade, onClose, onUpdated }) {
     const [tradeType, setTradeType] = useState("BUY");
     const [strategyName, setStrategyName] = useState("");
     const [entryPrice, setEntryPrice] = useState("");
@@ -57,6 +57,8 @@ function EditTradeModal({ trade, onClose }) {
             }
 
             console.log("Trade updated:", data);
+            onUpdated();
+            onClose();
 
             onClose();
         } catch (error) {
