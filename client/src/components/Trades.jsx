@@ -11,6 +11,7 @@ function Trades({ onNavigate }) {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [editingTrade, setEditingTrade] = useState(null);
+
     const handleEdit = (trade) => {
         console.log("EDIT TRADE DATA:", trade);
         setEditingTrade(trade);
@@ -36,15 +37,15 @@ function Trades({ onNavigate }) {
         }
 
         if (activeFilter === 'win') {
-            url += '&status=CLOSED'
+            url += '&result=win'
         }
 
         if (activeFilter === 'loss') {
-            url += '&status=CLOSED'
+            url += '&result=loss'
         }
 
         if (activeFilter === 'breakeven') {
-            url += '&status=CLOSED'
+            url += '&result=breakeven'
         }
 
         setLoading(true)
@@ -64,27 +65,8 @@ function Trades({ onNavigate }) {
             })
             .then((data) => {
                 console.log('Pagination:', data.pagination)
-                let filteredTrades = data.trades
 
-                if (activeFilter === 'win') {
-                    filteredTrades = filteredTrades.filter(
-                        (trade) => trade.pnl > 0
-                    )
-                }
-
-                if (activeFilter === 'loss') {
-                    filteredTrades = filteredTrades.filter(
-                        (trade) => trade.pnl < 0
-                    )
-                }
-
-                if (activeFilter === 'breakeven') {
-                    filteredTrades = filteredTrades.filter(
-                        (trade) => trade.pnl === 0
-                    )
-                }
-
-                setTrades(filteredTrades)
+                setTrades(data.trades)
                 setTotalPages(data.pagination.totalPages)
                 setLoading(false)
             })
@@ -94,6 +76,7 @@ function Trades({ onNavigate }) {
                 setLoading(false)
             })
     }, [activeFilter, currentPage, refreshKey])
+
     return (
         <div className="trades-page">
             <aside className="trades-sidebar">
@@ -108,13 +91,34 @@ function Trades({ onNavigate }) {
                     >
                         Dashboard
                     </div>
-                    <div className="trades-nav-item active">Trades</div>
-                    <div className="trades-nav-item">Analytics</div>
-                    <div className="trades-nav-item">Calendar</div>
-                    <div className="trades-nav-item">Watchlist</div>
-                    <div className="trades-nav-item">Journal</div>
-                    <div className="trades-nav-item">Goals</div>
-                    <div className="trades-nav-item">Settings</div>
+
+                    <div className="trades-nav-item active">
+                        Trades
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Analytics
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Calendar
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Watchlist
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Journal
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Goals
+                    </div>
+
+                    <div className="trades-nav-item">
+                        Settings
+                    </div>
                 </nav>
             </aside>
 
@@ -151,8 +155,7 @@ function Trades({ onNavigate }) {
 
                     <div className="trades-filter-tabs">
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'all' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('all')
                                 setCurrentPage(1)
@@ -162,8 +165,7 @@ function Trades({ onNavigate }) {
                         </button>
 
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'long' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'long' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('long')
                                 setCurrentPage(1)
@@ -173,8 +175,7 @@ function Trades({ onNavigate }) {
                         </button>
 
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'short' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'short' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('short')
                                 setCurrentPage(1)
@@ -184,8 +185,7 @@ function Trades({ onNavigate }) {
                         </button>
 
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'win' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'win' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('win')
                                 setCurrentPage(1)
@@ -195,8 +195,7 @@ function Trades({ onNavigate }) {
                         </button>
 
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'loss' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'loss' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('loss')
                                 setCurrentPage(1)
@@ -206,8 +205,7 @@ function Trades({ onNavigate }) {
                         </button>
 
                         <button
-                            className={`trades-filter-tab ${activeFilter === 'breakeven' ? 'active' : ''
-                                }`}
+                            className={`trades-filter-tab ${activeFilter === 'breakeven' ? 'active' : ''}`}
                             onClick={() => {
                                 setActiveFilter('breakeven')
                                 setCurrentPage(1)
@@ -216,6 +214,7 @@ function Trades({ onNavigate }) {
                             Breakeven
                         </button>
                     </div>
+
                     <div className="trades-table-card">
                         <div className="trades-table-wrapper">
                             <table className="trades-table">
@@ -239,19 +238,19 @@ function Trades({ onNavigate }) {
                                 <tbody>
                                     {loading && (
                                         <tr>
-                                            <td colSpan="11">Loading trades...</td>
+                                            <td colSpan="12">Loading trades...</td>
                                         </tr>
                                     )}
 
                                     {!loading && error && (
                                         <tr>
-                                            <td colSpan="11">{error}</td>
+                                            <td colSpan="12">{error}</td>
                                         </tr>
                                     )}
 
                                     {!loading && !error && trades.length === 0 && (
                                         <tr>
-                                            <td colSpan="11">No trades found</td>
+                                            <td colSpan="12">No trades found</td>
                                         </tr>
                                     )}
 
@@ -273,7 +272,9 @@ function Trades({ onNavigate }) {
                                                                 : 'trade-type-short'
                                                         }
                                                     >
-                                                        {trade.tradeType === 'BUY' ? 'Long' : 'Short'}
+                                                        {trade.tradeType === 'BUY'
+                                                            ? 'Long'
+                                                            : 'Short'}
                                                     </span>
                                                 </td>
 
@@ -302,6 +303,7 @@ function Trades({ onNavigate }) {
                                                 <td>-</td>
 
                                                 <td>{trade.status}</td>
+
                                                 <td>
                                                     <div className="trade-actions">
                                                         <button
@@ -317,7 +319,11 @@ function Trades({ onNavigate }) {
 
                                                         <DeleteTrade
                                                             tradeId={trade.id}
-                                                            onDeleted={() => setRefreshKey((value) => value + 1)}
+                                                            onDeleted={() =>
+                                                                setRefreshKey(
+                                                                    (value) => value + 1
+                                                                )
+                                                            }
                                                         />
                                                     </div>
                                                 </td>
@@ -327,6 +333,7 @@ function Trades({ onNavigate }) {
                             </table>
                         </div>
                     </div>
+
                     <div className="trades-pagination">
                         <button
                             className="trades-pagination-button"
@@ -342,8 +349,7 @@ function Trades({ onNavigate }) {
                         ).map((page) => (
                             <button
                                 key={page}
-                                className={`trades-pagination-button ${currentPage === page ? 'active' : ''
-                                    }`}
+                                className={`trades-pagination-button ${currentPage === page ? 'active' : ''}`}
                                 onClick={() => setCurrentPage(page)}
                             >
                                 {page}
@@ -358,10 +364,13 @@ function Trades({ onNavigate }) {
                             ›
                         </button>
                     </div>
+
                     <EditTradeModal
                         trade={editingTrade}
                         onClose={handleCloseEdit}
-                        onUpdated={() => setRefreshKey((value) => value + 1)}
+                        onUpdated={() =>
+                            setRefreshKey((value) => value + 1)
+                        }
                     />
                 </main>
             </section>

@@ -149,7 +149,15 @@ router.post("/", authMiddleware, async (req, res) => {
 // GET /api/trades -> get filtered trades for the logged-in user
 router.get("/", authMiddleware, async (req, res) => {
     try {
-        const { market, tradeType, status, symbol, sortBy, order } = req.query;
+        const {
+            market,
+            tradeType,
+            status,
+            symbol,
+            result,
+            sortBy,
+            order,
+        } = req.query;
 
         const page = req.query.page !== undefined
             ? Number(req.query.page)
@@ -210,6 +218,7 @@ router.get("/", authMiddleware, async (req, res) => {
 
         const validTradeTypes = ["BUY", "SELL"];
         const validStatuses = ["OPEN", "CLOSED"];
+        const validResults = ["win", "loss", "breakeven"];
 
         if (market !== undefined && !validMarkets.includes(market)) {
             return res.status(400).json({
@@ -226,6 +235,11 @@ router.get("/", authMiddleware, async (req, res) => {
         if (status !== undefined && !validStatuses.includes(status)) {
             return res.status(400).json({
                 message: "Invalid status filter",
+            });
+        }
+        if (result !== undefined && !validResults.includes(result)) {
+            return res.status(400).json({
+                message: "Invalid result filter",
             });
         }
 
@@ -247,6 +261,50 @@ router.get("/", authMiddleware, async (req, res) => {
 
         if (symbol !== undefined) {
             filter.symbol = symbol.toUpperCase();
+        }
+        if (result === "win") {
+            filter.$or = [
+                {
+                    tradeType: "BUY",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $gt: ["$exitPrice", "$entryPrice"] },
+                },
+                {
+                    tradeType: "SELL",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $lt: ["$exitPrice", "$entryPrice"] },
+                },
+            ];
+        }
+
+        if (result === "loss") {
+            filter.$or = [
+                {
+                    tradeType: "BUY",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $lt: ["$exitPrice", "$entryPrice"] },
+                },
+                {
+                    tradeType: "SELL",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $gt: ["$exitPrice", "$entryPrice"] },
+                },
+            ];
+        }
+
+        if (result === "breakeven") {
+            filter.$or = [
+                {
+                    tradeType: "BUY",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $eq: ["$exitPrice", "$entryPrice"] },
+                },
+                {
+                    tradeType: "SELL",
+                    exitPrice: { $gt: 0 },
+                    $expr: { $eq: ["$exitPrice", "$entryPrice"] },
+                },
+            ];
         }
 
         const totalTrades = await Trade.countDocuments(filter);
