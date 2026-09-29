@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import '../styles/trades/Trades.css'
 import EditTradeModal from "./EditTradeModal.jsx";
+import DeleteTrade from "./DeleteTrade.jsx";
 
 function Trades({ onNavigate }) {
     const [trades, setTrades] = useState([])
@@ -314,12 +315,10 @@ function Trades({ onNavigate }) {
                                                             ✎
                                                         </button>
 
-                                                        <button
-                                                            className="trade-action-button delete"
-                                                            title="Delete trade"
-                                                        >
-                                                            🗑
-                                                        </button>
+                                                        <DeleteTrade
+                                                            tradeId={trade.id}
+                                                            onDeleted={() => setRefreshKey((value) => value + 1)}
+                                                        />
                                                     </div>
                                                 </td>
                                             </tr>
