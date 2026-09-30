@@ -681,3 +681,90 @@
 .add-trade-body {
     margin-top: 30px;
 }
+
+.add-trade-section {
+    border: 1px solid #244956;
+    border-radius: 12px;
+    padding: 18px;
+    background: #0a2027;
+}
+
+.add-trade-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.add-trade-section-title span {
+    color: #19d9bd;
+    font-size: 20px;
+}
+
+.add-trade-section-title h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.add-trade-basic-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+}
+
+.add-trade-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.add-trade-field label {
+    color: #d7e2e5;
+    font-size: 13px;
+}
+
+.add-trade-field label span {
+    color: #ff5757;
+}
+
+.add-trade-field select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #31596a;
+    background: #0c242c;
+    color: #ffffff;
+    outline: none;
+}
+
+.add-trade-field select:focus {
+    border-color: #19d9bd;
+}
+
+.add-trade-type-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.add-trade-type-button {
+    height: 44px;
+    flex: 1;
+    border-radius: 8px;
+    border: 1px solid #31596a;
+    background: #0c242c;
+    color: #a9bec5;
+    cursor: pointer;
+}
+
+.add-trade-type-button.active {
+    background: rgba(25, 217, 189, 0.12);
+    border-color: #19d9bd;
+    color: #19d9bd;
+}
+
+.add-trade-type-button.short {
+    border-color: #7d3b45;
+    color: #ff6666;
+}
