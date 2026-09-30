@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import '../styles/trades/Trades.css'
 import EditTradeModal from "./EditTradeModal.jsx";
 import DeleteTrade from "./DeleteTrade.jsx";
+import AddTradeModal from "./AddTradeModal.jsx";
 
 function Trades({ onNavigate }) {
     const [trades, setTrades] = useState([])
@@ -11,7 +12,7 @@ function Trades({ onNavigate }) {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [editingTrade, setEditingTrade] = useState(null);
-
+    const [isAddTradeOpen, setIsAddTradeOpen] = useState(false);
     const handleEdit = (trade) => {
         console.log("EDIT TRADE DATA:", trade);
         setEditingTrade(trade);
@@ -143,7 +144,10 @@ function Trades({ onNavigate }) {
                         </div>
 
                         <div className="trades-heading-actions">
-                            <button className="trades-add-button">
+                            <button
+                                className="trades-add-button"
+                                onClick={() => setIsAddTradeOpen(true)}
+                            >
                                 + Add Trade
                             </button>
 
@@ -372,6 +376,11 @@ function Trades({ onNavigate }) {
                             setRefreshKey((value) => value + 1)
                         }
                     />
+                    {isAddTradeOpen && (
+                        <AddTradeModal
+                            onClose={() => setIsAddTradeOpen(false)}
+                        />
+                    )}
                 </main>
             </section>
         </div>
