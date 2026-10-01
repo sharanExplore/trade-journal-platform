@@ -923,3 +923,43 @@
     background: #31596a;
     border-radius: 10px;
 }
+
+.add-trade-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-trade-cancel-button,
+.add-trade-submit-button {
+    border: 1px solid #2b5663;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-trade-cancel-button {
+    background: transparent;
+    color: #9bb9c2;
+}
+
+.add-trade-cancel-button:hover {
+    background: #102b33;
+    color: #ffffff;
+}
+
+.add-trade-submit-button {
+    background: #00c7b7;
+    color: #041417;
+    border-color: #00c7b7;
+}
+
+.add-trade-submit-button:hover {
+    background: #00b3a5;
+}
+
+.add-trade-close {
+    margin-left: 4px;
+}
