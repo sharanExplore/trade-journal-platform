@@ -379,6 +379,7 @@ function Trades({ onNavigate }) {
                     {isAddTradeOpen && (
                         <AddTradeModal
                             onClose={() => setIsAddTradeOpen(false)}
+                            onCreated={() => setRefreshKey((value) => value + 1)}
                         />
                     )}
                 </main>

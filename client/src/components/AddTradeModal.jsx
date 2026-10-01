@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function AddTradeModal({ onClose }) {
+function AddTradeModal({ onClose, onCreated }) {
     const [symbol, setSymbol] = useState("");
     const [market, setMarket] = useState("crypto");
     const [tradeType, setTradeType] = useState("BUY");
@@ -56,6 +56,8 @@ function AddTradeModal({ onClose }) {
             }
 
             console.log("Trade created:", data);
+            onCreated();
+            onClose();
 
             // Reset form
             setSymbol("");
