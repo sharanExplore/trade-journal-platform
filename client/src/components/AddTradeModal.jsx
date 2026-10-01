@@ -8,6 +8,10 @@ function AddTradeModal({ onClose }) {
     const [exitDate, setExitDate] = useState("");
     const [rr, setRr] = useState("");
     const [tradeResult, setTradeResult] = useState("win");
+
+    const [notes, setNotes] = useState("");
+    const [tags, setTags] = useState("");
+    const [currency, setCurrency] = useState("INR");
     return (
         <div className="add-trade-overlay">
             <div className="add-trade-modal">
@@ -220,6 +224,48 @@ function AddTradeModal({ onClose }) {
                                         Breakeven
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section className="add-trade-section">
+                        <div className="add-trade-section-title">
+                            <span>▤</span>
+                            <h3>Additional Information</h3>
+                        </div>
+
+                        <div className="add-trade-additional-grid">
+                            <div className="add-trade-field add-trade-notes-field">
+                                <label>Notes</label>
+
+                                <textarea
+                                    value={notes}
+                                    onChange={(event) => setNotes(event.target.value)}
+                                    placeholder="Add notes about this trade..."
+                                    rows="4"
+                                />
+                            </div>
+
+                            <div className="add-trade-field">
+                                <label>Tags</label>
+
+                                <input
+                                    type="text"
+                                    value={tags}
+                                    onChange={(event) => setTags(event.target.value)}
+                                    placeholder="e.g. breakout, momentum"
+                                />
+                            </div>
+
+                            <div className="add-trade-field">
+                                <label>Currency</label>
+
+                                <select
+                                    value={currency}
+                                    onChange={(event) => setCurrency(event.target.value)}
+                                >
+                                    <option value="INR">INR</option>
+                                    <option value="USD">USD</option>
+                                </select>
                             </div>
                         </div>
                     </section>

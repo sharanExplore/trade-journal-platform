@@ -850,3 +850,76 @@
     background: rgba(109, 154, 170, 0.1);
     color: #a9c2ca;
 }
+
+.add-trade-additional-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.add-trade-notes-field {
+    grid-row: span 2;
+}
+
+.add-trade-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #31596a;
+    background: #0c242c;
+    color: #ffffff;
+    outline: none;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.add-trade-field textarea:focus {
+    border-color: #19d9bd;
+}
+
+.add-trade-field textarea::placeholder,
+.add-trade-field input::placeholder {
+    color: #66818a;
+}
+
+.add-trade-overlay {
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.add-trade-modal {
+    width: 730px;
+    max-width: 100%;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.add-trade-header {
+    flex-shrink: 0;
+}
+
+.add-trade-body {
+    overflow-y: auto;
+    padding-right: 6px;
+    padding-bottom: 4px;
+}
+
+/* Scrollbar inside the modal */
+.add-trade-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.add-trade-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.add-trade-body::-webkit-scrollbar-thumb {
+    background: #31596a;
+    border-radius: 10px;
+}
