@@ -19,6 +19,67 @@ function AddTradeModal({ onClose }) {
     const [tags, setTags] = useState("");
     const [currency, setCurrency] = useState("INR");
 
+
+    const handleSubmit = async () => {
+        const token = localStorage.getItem("token");
+
+        const tradeData = {
+            symbol,
+            market,
+            tradeType,
+            quantity: Number(quantity),
+            entryPrice: Number(entryPrice),
+            exitPrice: Number(exitPrice),
+            entryDate,
+            exitDate,
+            currency,
+            strategyName,
+        };
+
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/trades",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(tradeData),
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to add trade");
+            }
+
+            console.log("Trade created:", data);
+
+            // Reset form
+            setSymbol("");
+            setMarket("crypto");
+            setTradeType("BUY");
+            setStrategyName("Breakout");
+            setEntryPrice("");
+            setExitPrice("");
+            setQuantity("");
+            setEntryDate("");
+            setExitDate("");
+            setRr("");
+            setTradeResult("win");
+            setNotes("");
+            setTags("");
+            setCurrency("INR");
+
+            onClose();
+        } catch (error) {
+            console.error("Add trade error:", error);
+            alert(error.message);
+        }
+    };
+
     return (
         <div className="add-trade-overlay">
             <div className="add-trade-modal">
@@ -42,6 +103,7 @@ function AddTradeModal({ onClose }) {
                         <button
                             type="button"
                             className="add-trade-submit-button"
+                            onClick={handleSubmit}
                         >
                             Add Trade
                         </button>
