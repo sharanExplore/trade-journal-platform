@@ -12,6 +12,7 @@ import Register from './components/Register.jsx'
 import Login from './components/Login.jsx'
 import Dashboard from './components/Dashboard.jsx'
 import Trades from './components/Trades.jsx'
+import Analytics from './components/Analytics.jsx'
 
 
 function App() {
@@ -31,6 +32,9 @@ function App() {
     return <Trades onNavigate={setPage} />
   }
 
+  if (page === 'analytics') {
+    return <Analytics />
+  }
 
   return (
     <>

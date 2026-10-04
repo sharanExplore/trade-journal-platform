@@ -123,7 +123,10 @@ function Dashboard({ onNavigate }) {
                         Trades
                     </div>
 
-                    <div className="dashboard-nav-item">
+                    <div
+                        className="dashboard-nav-item"
+                        onClick={() => onNavigate('analytics')}
+                    >
                         Analytics
                     </div>
 
