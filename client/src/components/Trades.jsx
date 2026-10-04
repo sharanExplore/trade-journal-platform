@@ -97,7 +97,10 @@ function Trades({ onNavigate }) {
                         Trades
                     </div>
 
-                    <div className="trades-nav-item">
+                    <div
+                        className="trades-nav-item"
+                        onClick={() => onNavigate('analytics')}
+                    >
                         Analytics
                     </div>
 

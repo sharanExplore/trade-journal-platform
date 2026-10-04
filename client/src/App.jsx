@@ -33,7 +33,7 @@ function App() {
   }
 
   if (page === 'analytics') {
-    return <Analytics />
+    return <Analytics onNavigate={setPage} />
   }
 
   return (
