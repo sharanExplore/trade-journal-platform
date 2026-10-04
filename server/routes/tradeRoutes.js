@@ -756,6 +756,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     }
 });
 
+
 router.get("/stats/equity-curve", authMiddleware, async (req, res) => {
     try {
         const { range } = req.query;
