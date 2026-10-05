@@ -1,6 +1,36 @@
+import { useEffect, useState } from "react";
 import "../styles/analytics/Analytics.css";
 
 function Analytics({ onNavigate }) {
+    const [analytics, setAnalytics] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        fetch("http://localhost:5000/api/trades/analytics", {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch analytics");
+                }
+
+                return response.json();
+            })
+            .then((data) => {
+                setAnalytics(data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error("Analytics error:", error);
+                setError("Unable to load analytics");
+                setLoading(false);
+            });
+    }, []);
     return (
         <div className="analytics">
             {/* Sidebar */}
@@ -101,7 +131,11 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Total P&amp;L</p>
-                                <h2>+₹12,480.32</h2>
+                                <h2>
+                                    {loading
+                                        ? "Loading..."
+                                        : `₹${analytics?.summary.totalPnL.toFixed(2)}`}
+                                </h2>
 
                                 <span className="analytics-positive">
                                     ↑ 18.4%
@@ -118,7 +152,11 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Win Rate</p>
-                                <h2>68%</h2>
+                                <h2>
+                                    {loading
+                                        ? "Loading..."
+                                        : `${analytics?.summary.winRate.toFixed(1)}%`}
+                                </h2>
 
                                 <span className="analytics-positive">
                                     ↑ 6%
@@ -135,7 +173,13 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Profit Factor</p>
-                                <h2>2.4</h2>
+                                <h2>
+                                    {loading
+                                        ? "Loading..."
+                                        : analytics?.summary.profitFactor === Infinity
+                                            ? "∞"
+                                            : analytics?.summary.profitFactor.toFixed(2)}
+                                </h2>
 
                                 <span className="analytics-positive">
                                     ↑ 0.6
@@ -152,7 +196,11 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Expectancy</p>
-                                <h2>+1.2R</h2>
+                                <h2>
+                                    {loading
+                                        ? "Loading..."
+                                        : `₹${analytics?.summary.expectancy.toFixed(2)}`}
+                                </h2>
 
                                 <span className="analytics-positive">
                                     ↑ 0.3R

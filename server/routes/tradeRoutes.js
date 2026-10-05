@@ -859,4 +859,131 @@ router.get("/stats/equity-curve", authMiddleware, async (req, res) => {
         });
     }
 });
+
+router.get("/analytics", authMiddleware, async (req, res) => {
+    try {
+        const trades = await Trade.find({
+            user: req.userId,
+            status: "CLOSED",
+        }).sort({ exitDate: 1 });
+
+        let totalPnL = 0;
+        let grossProfit = 0;
+        let grossLoss = 0;
+        let winningTrades = 0;
+        let losingTrades = 0;
+        let breakevenTrades = 0;
+
+        const symbolStats = {};
+        const strategyStats = {};
+
+        trades.forEach((trade) => {
+            let pnl = 0;
+
+            if (trade.tradeType === "BUY") {
+                pnl = (trade.exitPrice - trade.entryPrice) * trade.quantity;
+            }
+
+            if (trade.tradeType === "SELL") {
+                pnl = (trade.entryPrice - trade.exitPrice) * trade.quantity;
+            }
+
+            totalPnL += pnl;
+
+            if (pnl > 0) {
+                grossProfit += pnl;
+                winningTrades++;
+            } else if (pnl < 0) {
+                grossLoss += Math.abs(pnl);
+                losingTrades++;
+            } else {
+                breakevenTrades++;
+            }
+
+            // Symbol statistics
+            if (!symbolStats[trade.symbol]) {
+                symbolStats[trade.symbol] = {
+                    symbol: trade.symbol,
+                    pnl: 0,
+                    trades: 0,
+                };
+            }
+
+            symbolStats[trade.symbol].pnl += pnl;
+            symbolStats[trade.symbol].trades++;
+
+            // Strategy statistics
+            if (!strategyStats[trade.strategyName]) {
+                strategyStats[trade.strategyName] = {
+                    strategy: trade.strategyName,
+                    pnl: 0,
+                    trades: 0,
+                    wins: 0,
+                };
+            }
+
+            strategyStats[trade.strategyName].pnl += pnl;
+            strategyStats[trade.strategyName].trades++;
+
+            if (pnl > 0) {
+                strategyStats[trade.strategyName].wins++;
+            }
+        });
+
+        const totalTrades = trades.length;
+
+        const winRate =
+            totalTrades > 0
+                ? (winningTrades / totalTrades) * 100
+                : 0;
+
+        const profitFactor =
+            grossLoss > 0
+                ? grossProfit / grossLoss
+                : grossProfit > 0
+                    ? Infinity
+                    : 0;
+
+        const expectancy =
+            totalTrades > 0
+                ? totalPnL / totalTrades
+                : 0;
+
+        const symbols = Object.values(symbolStats)
+            .sort((a, b) => b.pnl - a.pnl);
+
+        const strategies = Object.values(strategyStats)
+            .map((strategy) => ({
+                ...strategy,
+                winRate:
+                    strategy.trades > 0
+                        ? (strategy.wins / strategy.trades) * 100
+                        : 0,
+            }))
+            .sort((a, b) => b.pnl - a.pnl);
+
+        return res.status(200).json({
+            summary: {
+                totalTrades,
+                totalPnL,
+                grossProfit,
+                grossLoss,
+                winningTrades,
+                losingTrades,
+                breakevenTrades,
+                winRate,
+                profitFactor,
+                expectancy,
+            },
+            symbols,
+            strategies,
+        });
+    } catch (error) {
+        console.error("Analytics error:", error);
+
+        return res.status(500).json({
+            message: "Server error while calculating analytics",
+        });
+    }
+});
 module.exports = router;
