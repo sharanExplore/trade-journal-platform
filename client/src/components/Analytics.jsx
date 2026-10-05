@@ -22,6 +22,9 @@ function Analytics({ onNavigate }) {
                 return response.json();
             })
             .then((data) => {
+                console.log("ANALYTICS API RESPONSE:", data);
+
+                // Support the expected API structure.
                 setAnalytics(data);
                 setLoading(false);
             })
@@ -31,8 +34,12 @@ function Analytics({ onNavigate }) {
                 setLoading(false);
             });
     }, []);
+
+    const summary = analytics?.summary;
+
     return (
         <div className="analytics">
+
             {/* Sidebar */}
             <aside className="analytics-sidebar">
                 <div className="analytics-logo">
@@ -83,7 +90,7 @@ function Analytics({ onNavigate }) {
             {/* Main content */}
             <section className="analytics-content">
 
-                {/* Top header */}
+                {/* Header */}
                 <header className="analytics-header">
                     <input
                         className="analytics-search"
@@ -121,9 +128,16 @@ function Analytics({ onNavigate }) {
                         </div>
                     </header>
 
+                    {error && (
+                        <div className="analytics-error">
+                            {error}
+                        </div>
+                    )}
+
                     {/* KPI Cards */}
                     <section className="analytics-kpi-grid">
 
+                        {/* Total P&L */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon green">
                                 ₹
@@ -131,20 +145,22 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Total P&amp;L</p>
+
                                 <h2>
                                     {loading
                                         ? "Loading..."
-                                        : `₹${analytics?.summary.totalPnL.toFixed(2)}`}
+                                        : `₹${Number(
+                                            summary?.totalPnL ?? 0
+                                        ).toFixed(2)}`}
                                 </h2>
 
                                 <span className="analytics-positive">
-                                    ↑ 18.4%
+                                    Total closed trade P&amp;L
                                 </span>
-
-                                <small>vs previous month</small>
                             </div>
                         </div>
 
+                        {/* Win Rate */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon purple">
                                 ◉
@@ -152,20 +168,22 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Win Rate</p>
+
                                 <h2>
                                     {loading
                                         ? "Loading..."
-                                        : `${analytics?.summary.winRate.toFixed(1)}%`}
+                                        : `${Number(
+                                            summary?.winRate ?? 0
+                                        ).toFixed(1)}%`}
                                 </h2>
 
                                 <span className="analytics-positive">
-                                    ↑ 6%
+                                    Winning trades
                                 </span>
-
-                                <small>vs previous month</small>
                             </div>
                         </div>
 
+                        {/* Profit Factor */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon blue">
                                 ▥
@@ -173,22 +191,24 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Profit Factor</p>
+
                                 <h2>
                                     {loading
                                         ? "Loading..."
-                                        : analytics?.summary.profitFactor === Infinity
+                                        : summary?.profitFactor === Infinity
                                             ? "∞"
-                                            : analytics?.summary.profitFactor.toFixed(2)}
+                                            : Number(
+                                                summary?.profitFactor ?? 0
+                                            ).toFixed(2)}
                                 </h2>
 
                                 <span className="analytics-positive">
-                                    ↑ 0.6
+                                    Gross profit ÷ gross loss
                                 </span>
-
-                                <small>vs previous month</small>
                             </div>
                         </div>
 
+                        {/* Expectancy */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon purple">
                                 ⌁
@@ -196,54 +216,35 @@ function Analytics({ onNavigate }) {
 
                             <div>
                                 <p>Expectancy</p>
+
                                 <h2>
                                     {loading
                                         ? "Loading..."
-                                        : `₹${analytics?.summary.expectancy.toFixed(2)}`}
+                                        : `₹${Number(
+                                            summary?.expectancy ?? 0
+                                        ).toFixed(2)}`}
                                 </h2>
 
                                 <span className="analytics-positive">
-                                    ↑ 0.3R
+                                    Average P&amp;L per trade
                                 </span>
-
-                                <small>vs previous month</small>
                             </div>
                         </div>
 
                     </section>
 
-                    {/* Analytics tabs */}
+                    {/* Tabs */}
                     <nav className="analytics-tabs">
-                        <button className="active">
-                            Overview
-                        </button>
-
-                        <button>
-                            By Symbol
-                        </button>
-
-                        <button>
-                            By Setup
-                        </button>
-
-                        <button>
-                            By Time
-                        </button>
-
-                        <button>
-                            By Day
-                        </button>
-
-                        <button>
-                            Risk Analysis
-                        </button>
-
-                        <button>
-                            Advanced
-                        </button>
+                        <button className="active">Overview</button>
+                        <button>By Symbol</button>
+                        <button>By Setup</button>
+                        <button>By Time</button>
+                        <button>By Day</button>
+                        <button>Risk Analysis</button>
+                        <button>Advanced</button>
                     </nav>
 
-                    {/* Analytics cards */}
+                    {/* Analytics grid */}
                     <section className="analytics-grid">
 
                         {/* Cumulative P&L */}
@@ -290,7 +291,9 @@ function Analytics({ onNavigate }) {
                             </div>
 
                             <div className="analytics-donut-placeholder">
-                                <strong>124</strong>
+                                <strong>
+                                    {summary?.totalTrades ?? 0}
+                                </strong>
                                 <span>Trades</span>
                             </div>
 
@@ -329,7 +332,6 @@ function Analytics({ onNavigate }) {
                             </div>
 
                             <div className="analytics-bars-placeholder">
-
                                 <div>
                                     <span>Breakout</span>
                                     <i />
@@ -359,7 +361,6 @@ function Analytics({ onNavigate }) {
                                     <i />
                                     <b>70%</b>
                                 </div>
-
                             </div>
                         </div>
 
@@ -371,7 +372,6 @@ function Analytics({ onNavigate }) {
                             </div>
 
                             <div className="analytics-bars-placeholder">
-
                                 <div>
                                     <span>BTC/USD</span>
                                     <i />
@@ -405,11 +405,10 @@ function Analytics({ onNavigate }) {
                                         -640
                                     </b>
                                 </div>
-
                             </div>
                         </div>
 
-                        {/* P&L Heatmap */}
+                        {/* Heatmap */}
                         <div className="analytics-card analytics-bottom-card">
                             <div className="analytics-card-header">
                                 <h2>P&amp;L Heatmap</h2>
@@ -429,7 +428,6 @@ function Analytics({ onNavigate }) {
                         </div>
 
                     </section>
-
                 </main>
             </section>
         </div>
