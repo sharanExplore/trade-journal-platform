@@ -533,23 +533,32 @@ function Analytics({ onNavigate }) {
                         </div>
 
                         {/* P&L Heatmap */}
+                        {/* P&L Heatmap */}
                         <div className="analytics-card heatmap-card">
-                            <div className="analytics-card-header">
-                                <div>
+                            <div className="heatmap-header">
+                                <div className="heatmap-title">
                                     <h2>P&amp;L Heatmap</h2>
                                     <span>ⓘ</span>
                                 </div>
 
-                                <div className="heatmap-controls">
-                                    <button>‹</button>
-                                    <strong>2026</strong>
-                                    <button>›</button>
+                                <div className="heatmap-header-right">
+                                    <div className="heatmap-year-control">
+                                        <button>‹</button>
+                                        <strong>2026</strong>
+                                        <button>›</button>
+                                    </div>
+
+                                    <div className="heatmap-tabs">
+                                        <button className="active">P&amp;L</button>
+                                        <button>Trades</button>
+                                        <button>Win Rate</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="heatmap-body">
+                            <div className="heatmap-content">
 
-                                <div className="heatmap-days">
+                                <div className="heatmap-day-labels">
                                     <span>Mon</span>
                                     <span>Tue</span>
                                     <span>Wed</span>
@@ -559,20 +568,41 @@ function Analytics({ onNavigate }) {
                                     <span>Sun</span>
                                 </div>
 
-                                <div className="heatmap-grid">
-                                    {Array.from({ length: 98 }).map(
-                                        (_, index) => (
-                                            <span
-                                                key={index}
-                                                className={`heat-cell heat-${(
-                                                    index * 7 +
-                                                    index % 5
-                                                ) % 7}`}
-                                            />
-                                        )
-                                    )}
+                                <div className="heatmap-calendar">
 
-                                    <div className="heatmap-months">
+                                    <div className="heatmap-weeks">
+                                        {Array.from({ length: 52 }).map((_, weekIndex) => (
+                                            <div className="heatmap-week" key={weekIndex}>
+                                                {Array.from({ length: 7 }).map((_, dayIndex) => {
+                                                    const value =
+                                                        (weekIndex * 13 + dayIndex * 7) % 10;
+
+                                                    let level = "empty";
+
+                                                    if (value === 1 || value === 2) {
+                                                        level = "loss-light";
+                                                    } else if (value === 3) {
+                                                        level = "loss";
+                                                    } else if (value === 4 || value === 5) {
+                                                        level = "profit-light";
+                                                    } else if (value === 6 || value === 7) {
+                                                        level = "profit";
+                                                    } else if (value >= 8) {
+                                                        level = "profit-strong";
+                                                    }
+
+                                                    return (
+                                                        <span
+                                                            key={dayIndex}
+                                                            className={`heatmap-cell ${level}`}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="heatmap-month-labels">
                                         <span>Oct</span>
                                         <span>Nov</span>
                                         <span>Dec</span>
@@ -586,29 +616,35 @@ function Analytics({ onNavigate }) {
                                         <span>Aug</span>
                                         <span>Sep</span>
                                     </div>
+
                                 </div>
                             </div>
 
                             <div className="heatmap-footer">
-                                <div>
+
+                                <div className="heatmap-legend">
                                     <span className="legend-loss" />
-                                    Loss
+                                    <span>Loss</span>
 
                                     <span className="legend-empty" />
                                     <span className="legend-empty" />
                                     <span className="legend-profit-light" />
                                     <span className="legend-profit" />
 
-                                    Profit
+                                    <span>Profit</span>
                                 </div>
 
                                 <div className="heatmap-scale">
-                                    <span>-5K</span>
-                                    <span>-2.5K</span>
-                                    <span>0</span>
-                                    <span>+2.5K</span>
-                                    <span>+5K</span>
+                                    <span className="scale-gradient" />
+                                    <div>
+                                        <span>-5K</span>
+                                        <span>-2.5K</span>
+                                        <span>0</span>
+                                        <span>+2.5K</span>
+                                        <span>+5K</span>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
 
