@@ -22,9 +22,6 @@ function Analytics({ onNavigate }) {
                 return response.json();
             })
             .then((data) => {
-                console.log("ANALYTICS API RESPONSE:", data);
-
-                // Support the expected API structure.
                 setAnalytics(data);
                 setLoading(false);
             })
@@ -36,6 +33,18 @@ function Analytics({ onNavigate }) {
     }, []);
 
     const summary = analytics?.summary;
+    const symbols = analytics?.symbols || [];
+    const strategies = analytics?.strategies || [];
+
+    const maxSymbolPnL = Math.max(
+        ...symbols.map((item) => Math.abs(item.pnl)),
+        1
+    );
+
+    const maxStrategyWinRate = Math.max(
+        ...strategies.map((item) => item.winRate),
+        1
+    );
 
     return (
         <div className="analytics">
@@ -87,10 +96,10 @@ function Analytics({ onNavigate }) {
                 </nav>
             </aside>
 
-            {/* Main content */}
+            {/* Main */}
             <section className="analytics-content">
 
-                {/* Header */}
+                {/* Top Header */}
                 <header className="analytics-header">
                     <input
                         className="analytics-search"
@@ -105,7 +114,7 @@ function Analytics({ onNavigate }) {
 
                 <main className="analytics-main">
 
-                    {/* Page heading */}
+                    {/* Page Header */}
                     <header className="analytics-page-header">
                         <div>
                             <h1>Analytics</h1>
@@ -121,7 +130,6 @@ function Analytics({ onNavigate }) {
                             <button>6M</button>
                             <button>1Y</button>
                             <button>Custom</button>
-
                             <button className="analytics-calendar-button">
                                 ▣
                             </button>
@@ -137,13 +145,12 @@ function Analytics({ onNavigate }) {
                     {/* KPI Cards */}
                     <section className="analytics-kpi-grid">
 
-                        {/* Total P&L */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon green">
                                 ₹
                             </div>
 
-                            <div>
+                            <div className="analytics-kpi-content">
                                 <p>Total P&amp;L</p>
 
                                 <h2>
@@ -158,15 +165,22 @@ function Analytics({ onNavigate }) {
                                     Total closed trade P&amp;L
                                 </span>
                             </div>
+
+                            <div className="kpi-mini-chart green-chart">
+                                <span />
+                                <span />
+                                <span />
+                                <span />
+                                <span />
+                            </div>
                         </div>
 
-                        {/* Win Rate */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon purple">
                                 ◉
                             </div>
 
-                            <div>
+                            <div className="analytics-kpi-content">
                                 <p>Win Rate</p>
 
                                 <h2>
@@ -181,15 +195,18 @@ function Analytics({ onNavigate }) {
                                     Winning trades
                                 </span>
                             </div>
+
+                            <div className="kpi-ring">
+                                <span />
+                            </div>
                         </div>
 
-                        {/* Profit Factor */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon blue">
                                 ▥
                             </div>
 
-                            <div>
+                            <div className="analytics-kpi-content">
                                 <p>Profit Factor</p>
 
                                 <h2>
@@ -206,15 +223,21 @@ function Analytics({ onNavigate }) {
                                     Gross profit ÷ gross loss
                                 </span>
                             </div>
+
+                            <div className="kpi-bars">
+                                <span />
+                                <span />
+                                <span />
+                                <span />
+                            </div>
                         </div>
 
-                        {/* Expectancy */}
                         <div className="analytics-card analytics-kpi-card">
                             <div className="analytics-kpi-icon purple">
                                 ⌁
                             </div>
 
-                            <div>
+                            <div className="analytics-kpi-content">
                                 <p>Expectancy</p>
 
                                 <h2>
@@ -229,13 +252,20 @@ function Analytics({ onNavigate }) {
                                     Average P&amp;L per trade
                                 </span>
                             </div>
+
+                            <div className="kpi-line-chart">
+                                <span />
+                            </div>
                         </div>
 
                     </section>
 
                     {/* Tabs */}
                     <nav className="analytics-tabs">
-                        <button className="active">Overview</button>
+                        <button className="active">
+                            Overview
+                        </button>
+
                         <button>By Symbol</button>
                         <button>By Setup</button>
                         <button>By Time</button>
@@ -244,11 +274,11 @@ function Analytics({ onNavigate }) {
                         <button>Advanced</button>
                     </nav>
 
-                    {/* Analytics grid */}
+                    {/* Main Analytics Grid */}
                     <section className="analytics-grid">
 
                         {/* Cumulative P&L */}
-                        <div className="analytics-card analytics-large-card">
+                        <div className="analytics-card cumulative-card">
                             <div className="analytics-card-header">
                                 <div>
                                     <h2>Cumulative P&amp;L</h2>
@@ -260,170 +290,325 @@ function Analytics({ onNavigate }) {
                                 </button>
                             </div>
 
-                            <div className="analytics-chart-placeholder">
-                                Cumulative P&amp;L Chart
-                            </div>
-                        </div>
+                            <div className="cumulative-chart">
 
-                        {/* Monthly P&L */}
-                        <div className="analytics-card analytics-large-card">
-                            <div className="analytics-card-header">
-                                <div>
-                                    <h2>Monthly P&amp;L</h2>
-                                    <span>ⓘ</span>
+                                <div className="chart-y-axis">
+                                    <span>20K</span>
+                                    <span>10K</span>
+                                    <span>0</span>
+                                    <span>-10K</span>
                                 </div>
 
-                                <button className="analytics-select">
-                                    2026 ▾
-                                </button>
-                            </div>
+                                <div className="chart-area">
+                                    <div className="chart-grid-line line-1" />
+                                    <div className="chart-grid-line line-2" />
+                                    <div className="chart-grid-line line-3" />
+                                    <div className="chart-grid-line line-4" />
 
-                            <div className="analytics-chart-placeholder">
-                                Monthly P&amp;L Chart
-                            </div>
-                        </div>
+                                    <svg
+                                        viewBox="0 0 600 190"
+                                        preserveAspectRatio="none"
+                                        className="cumulative-svg"
+                                    >
+                                        <defs>
+                                            <linearGradient
+                                                id="pnlFill"
+                                                x1="0"
+                                                y1="0"
+                                                x2="0"
+                                                y2="1"
+                                            >
+                                                <stop
+                                                    offset="0%"
+                                                    stopColor="#20e0b2"
+                                                    stopOpacity="0.35"
+                                                />
+                                                <stop
+                                                    offset="100%"
+                                                    stopColor="#20e0b2"
+                                                    stopOpacity="0"
+                                                />
+                                            </linearGradient>
+                                        </defs>
 
-                        {/* Risk Reward */}
-                        <div className="analytics-card analytics-risk-card">
-                            <div className="analytics-card-header">
-                                <h2>Trades by Risk-Reward</h2>
-                                <span>ⓘ</span>
-                            </div>
+                                        <path
+                                            className="pnl-area"
+                                            d="M0 145
+                                            L25 137
+                                            L50 140
+                                            L75 130
+                                            L100 134
+                                            L125 118
+                                            L150 125
+                                            L175 105
+                                            L200 112
+                                            L225 96
+                                            L250 103
+                                            L275 82
+                                            L300 91
+                                            L325 80
+                                            L350 88
+                                            L375 70
+                                            L400 82
+                                            L425 60
+                                            L450 74
+                                            L475 55
+                                            L500 68
+                                            L525 48
+                                            L550 54
+                                            L575 35
+                                            L600 24
+                                            L600 190
+                                            L0 190 Z"
+                                        />
 
-                            <div className="analytics-donut-placeholder">
-                                <strong>
-                                    {summary?.totalTrades ?? 0}
-                                </strong>
-                                <span>Trades</span>
-                            </div>
+                                        <path
+                                            className="pnl-line"
+                                            d="M0 145
+                                            L25 137
+                                            L50 140
+                                            L75 130
+                                            L100 134
+                                            L125 118
+                                            L150 125
+                                            L175 105
+                                            L200 112
+                                            L225 96
+                                            L250 103
+                                            L275 82
+                                            L300 91
+                                            L325 80
+                                            L350 88
+                                            L375 70
+                                            L400 82
+                                            L425 60
+                                            L450 74
+                                            L475 55
+                                            L500 68
+                                            L525 48
+                                            L550 54
+                                            L575 35
+                                            L600 24"
+                                        />
+                                    </svg>
 
-                            <div className="analytics-risk-legend">
-                                <p>
-                                    <span className="green-dot" />
-                                    1:1
-                                    <b>20%</b>
-                                </p>
+                                    <div className="chart-tooltip">
+                                        <strong>Current</strong>
+                                        <b>
+                                            ₹
+                                            {Number(
+                                                summary?.totalPnL ?? 0
+                                            ).toFixed(2)}
+                                        </b>
+                                    </div>
 
-                                <p>
-                                    <span className="purple-dot" />
-                                    1:2
-                                    <b>36%</b>
-                                </p>
+                                    <div className="chart-dates">
+                                        <span>Aug 20</span>
+                                        <span>Aug 27</span>
+                                        <span>Sep 3</span>
+                                        <span>Sep 10</span>
+                                        <span>Sep 17</span>
+                                    </div>
+                                </div>
 
-                                <p>
-                                    <span className="red-dot" />
-                                    1:3
-                                    <b>30%</b>
-                                </p>
-
-                                <p>
-                                    <span className="blue-dot" />
-                                    1.5+
-                                    <b>19%</b>
-                                </p>
                             </div>
                         </div>
 
                         {/* Win Rate by Setup */}
-                        <div className="analytics-card analytics-bottom-card">
+                        <div className="analytics-card setup-card">
                             <div className="analytics-card-header">
-                                <h2>Win Rate by Setup</h2>
-                                <span>ⓘ</span>
+                                <div>
+                                    <h2>Win Rate by Setup</h2>
+                                    <span>ⓘ</span>
+                                </div>
                             </div>
 
-                            <div className="analytics-bars-placeholder">
-                                <div>
-                                    <span>Breakout</span>
-                                    <i />
-                                    <b>78%</b>
-                                </div>
+                            <div className="analytics-bars">
+                                {strategies.length > 0 ? (
+                                    strategies
+                                        .slice(0, 5)
+                                        .map((strategy) => (
+                                            <div
+                                                className="analytics-bar-row"
+                                                key={strategy.strategy}
+                                            >
+                                                <span>
+                                                    {strategy.strategy}
+                                                </span>
 
-                                <div>
-                                    <span>Trend</span>
-                                    <i />
-                                    <b>69%</b>
-                                </div>
+                                                <div className="analytics-bar-track">
+                                                    <i
+                                                        style={{
+                                                            width: `${(
+                                                                strategy.winRate /
+                                                                maxStrategyWinRate
+                                                            ) * 100}%`,
+                                                        }}
+                                                        className={
+                                                            strategy.winRate < 50
+                                                                ? "loss"
+                                                                : ""
+                                                        }
+                                                    />
+                                                </div>
 
-                                <div>
-                                    <span>Range</span>
-                                    <i />
-                                    <b>52%</b>
-                                </div>
-
-                                <div>
-                                    <span>Reversal</span>
-                                    <i className="loss" />
-                                    <b>46%</b>
-                                </div>
-
-                                <div>
-                                    <span>News</span>
-                                    <i />
-                                    <b>70%</b>
-                                </div>
+                                                <b>
+                                                    {strategy.winRate.toFixed(
+                                                        0
+                                                    )}
+                                                    %
+                                                </b>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <p className="analytics-empty">
+                                        No strategy data yet
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         {/* Profit/Loss by Symbol */}
-                        <div className="analytics-card analytics-bottom-card">
+                        <div className="analytics-card symbol-card">
                             <div className="analytics-card-header">
-                                <h2>Profit/Loss by Symbol</h2>
-                                <span>ⓘ</span>
+                                <div>
+                                    <h2>Profit/Loss by Symbol</h2>
+                                    <span>ⓘ</span>
+                                </div>
                             </div>
 
-                            <div className="analytics-bars-placeholder">
-                                <div>
-                                    <span>BTC/USD</span>
-                                    <i />
-                                    <b>+3,420</b>
-                                </div>
+                            <div className="analytics-bars">
+                                {symbols.length > 0 ? (
+                                    symbols
+                                        .slice(0, 5)
+                                        .map((item) => (
+                                            <div
+                                                className="analytics-bar-row"
+                                                key={item.symbol}
+                                            >
+                                                <span>
+                                                    {item.symbol}
+                                                </span>
 
-                                <div>
-                                    <span>ETH/USD</span>
-                                    <i />
-                                    <b>+2,180</b>
-                                </div>
+                                                <div className="analytics-bar-track">
+                                                    <i
+                                                        className={
+                                                            item.pnl < 0
+                                                                ? "loss"
+                                                                : ""
+                                                        }
+                                                        style={{
+                                                            width: `${Math.max(
+                                                                (Math.abs(
+                                                                    item.pnl
+                                                                ) /
+                                                                    maxSymbolPnL) *
+                                                                100,
+                                                                8
+                                                            )}%`,
+                                                        }}
+                                                    />
+                                                </div>
 
-                                <div>
-                                    <span>SOL/USD</span>
-                                    <i />
-                                    <b>+1,240</b>
-                                </div>
-
-                                <div>
-                                    <span>AR/AR/USD</span>
-                                    <i className="loss" />
-                                    <b className="loss-text">
-                                        -380
-                                    </b>
-                                </div>
-
-                                <div>
-                                    <span>LINK/USD</span>
-                                    <i className="loss" />
-                                    <b className="loss-text">
-                                        -640
-                                    </b>
-                                </div>
+                                                <b
+                                                    className={
+                                                        item.pnl < 0
+                                                            ? "loss-text"
+                                                            : ""
+                                                    }
+                                                >
+                                                    {item.pnl >= 0
+                                                        ? "+"
+                                                        : ""}
+                                                    {item.pnl.toFixed(0)}
+                                                </b>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <p className="analytics-empty">
+                                        No symbol data yet
+                                    </p>
+                                )}
                             </div>
                         </div>
 
-                        {/* Heatmap */}
-                        <div className="analytics-card analytics-bottom-card">
+                        {/* P&L Heatmap */}
+                        <div className="analytics-card heatmap-card">
                             <div className="analytics-card-header">
-                                <h2>P&amp;L Heatmap</h2>
+                                <div>
+                                    <h2>P&amp;L Heatmap</h2>
+                                    <span>ⓘ</span>
+                                </div>
 
-                                <button className="analytics-select">
-                                    2026 ▾
-                                </button>
+                                <div className="heatmap-controls">
+                                    <button>‹</button>
+                                    <strong>2026</strong>
+                                    <button>›</button>
+                                </div>
                             </div>
 
-                            <div className="analytics-heatmap-placeholder">
-                                {Array.from({ length: 84 }).map(
-                                    (_, index) => (
-                                        <span key={index} />
-                                    )
-                                )}
+                            <div className="heatmap-body">
+
+                                <div className="heatmap-days">
+                                    <span>Mon</span>
+                                    <span>Tue</span>
+                                    <span>Wed</span>
+                                    <span>Thu</span>
+                                    <span>Fri</span>
+                                    <span>Sat</span>
+                                    <span>Sun</span>
+                                </div>
+
+                                <div className="heatmap-grid">
+                                    {Array.from({ length: 98 }).map(
+                                        (_, index) => (
+                                            <span
+                                                key={index}
+                                                className={`heat-cell heat-${(
+                                                    index * 7 +
+                                                    index % 5
+                                                ) % 7}`}
+                                            />
+                                        )
+                                    )}
+
+                                    <div className="heatmap-months">
+                                        <span>Oct</span>
+                                        <span>Nov</span>
+                                        <span>Dec</span>
+                                        <span>Jan</span>
+                                        <span>Feb</span>
+                                        <span>Mar</span>
+                                        <span>Apr</span>
+                                        <span>May</span>
+                                        <span>Jun</span>
+                                        <span>Jul</span>
+                                        <span>Aug</span>
+                                        <span>Sep</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="heatmap-footer">
+                                <div>
+                                    <span className="legend-loss" />
+                                    Loss
+
+                                    <span className="legend-empty" />
+                                    <span className="legend-empty" />
+                                    <span className="legend-profit-light" />
+                                    <span className="legend-profit" />
+
+                                    Profit
+                                </div>
+
+                                <div className="heatmap-scale">
+                                    <span>-5K</span>
+                                    <span>-2.5K</span>
+                                    <span>0</span>
+                                    <span>+2.5K</span>
+                                    <span>+5K</span>
+                                </div>
                             </div>
                         </div>
 
